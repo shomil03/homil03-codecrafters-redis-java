@@ -4,6 +4,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main{
@@ -51,9 +52,16 @@ public class Main{
     try{
       InputStream input = clientSocket.getInputStream();
       byte[] buffer = new byte[4096];
-
-      while(input.read(buffer) != -1)
-      clientSocket.getOutputStream().write("+PONG\r\n".getBytes());
+      int byteRead;
+      while((byteRead = input.read(buffer)) != -1){
+        String messgeString[] = new String(buffer , 0 , byteRead , "UTF-8").trim().split(" ");
+        System.out.println(Arrays.toString(messgeString));
+        // messgeString.toLowerCase();
+        // if(messgeString.equals("echo")) {
+          // String RESPbulkString = makeRESPbuldString()
+        // }
+        clientSocket.getOutputStream().write("+PONG\r\n".getBytes());
+      }
     }catch(Exception e){
       System.out.println("Client handler exception: " + e.getMessage());
     }
