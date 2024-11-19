@@ -24,11 +24,12 @@ public class Main {
          // Wait for connection from client.
          clientSocket = serverSocket.accept();
 
-         Scanner sc = new Scanner(System.in);
-         while(sc.hasNext()){
-          // if(sc.next().equals("PING"))
-          clientSocket.getOutputStream().write("+PONG\r\n".getBytes());
-         }
+         InputStream input = clientSocket.getInputStream();
+         byte[] buffer = new byte[4096];
+
+         while(input.read(buffer) != -1)
+         clientSocket.getOutputStream().write("+PONG\r\n".getBytes());
+          // if(sc.next().equals("PING")
          
         //  OutputStream output = clientSocket.getOutputStream();
         //  PrintWriter writer = new PrintWriter(output , true);
