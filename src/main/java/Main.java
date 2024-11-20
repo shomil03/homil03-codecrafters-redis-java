@@ -48,6 +48,7 @@ public class Main{
 
       String line = null;
       while((line = input.readLine())  != null) {
+      line.toLowerCase();
       // byte[] buffer = new byte[4096];
       // int byteRead;
       // while((byteRead = input.read(buffer)) != -1){
