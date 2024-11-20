@@ -50,6 +50,7 @@ public class Main{
         String messgeString[] = new String(buffer , 0 , byteRead , "UTF-8").trim().split("[^a-zA-Z]+");
 
         String command = parseCommand(messgeString).toLowerCase();
+        System.out.println("Command = " + command);
         switch (command) {
           case "echo":
             clientSocket.getOutputStream().write(makeBulkString(messgeString,2).getBytes());
@@ -59,6 +60,7 @@ public class Main{
             clientSocket.getOutputStream().write("+OK\r\n".getBytes());
             return;
           case "get":
+            System.out.println("In get");
             if(map.containsKey(messgeString[2])) {
               System.out.println("fetching key for "+ messgeString[1] + " " + map.get(messgeString[2]));
               clientSocket.getOutputStream().write(makeBulkString(messgeString,3).getBytes());
