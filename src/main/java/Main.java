@@ -63,12 +63,15 @@ public class Main{
             clientSocket.getOutputStream().write(makeBulkString(message).getBytes());
             return;
           case "set":
+            String keyLength = input.readLine().substring(1);
             String key = input.readLine();
+            String valueLength = input.readLine().substring(1);
             String value = input.readLine();
             map.put(key , value);
             clientSocket.getOutputStream().write("+OK\r\n".getBytes());
             return;
           case "get":
+            keyLength = input.readLine().substring(1);
             key = input.readLine();
             System.out.println("In get");
             if(map.containsKey(key)) {
@@ -80,7 +83,7 @@ public class Main{
             break;
 
           default:
-            clientSocket.getOutputStream().write("+PONG\r\n".getBytes());
+            // clientSocket.getOutputStream().write("+PONG\r\n".getBytes());
             break;
         }
         // System.out.println(Arrays.toString(messgeString));÷
