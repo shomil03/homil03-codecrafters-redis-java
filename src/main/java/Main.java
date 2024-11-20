@@ -7,7 +7,9 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
+
 public class Main{
+  
   static HashMap<String,String> map = new HashMap<>();
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -43,13 +45,20 @@ public class Main{
   }
   static void handleClient(Socket clientSocket) {
     try{
-      BufferedReader input = new BufferedReader(
-          new InputStreamReader(clientSocket.getInputStream()));
 
-      String line = null;
-      while((line = input.readLine())  != null) {
-      line.toLowerCase();
-      System.out.println(line);
+      Parser parser = new Parser(clientSocket.getInputStream());
+      // BufferedReader input = new BufferedReader(
+          // new InputStreamReader(clientSocket.getInputStream()));
+      while (true) {
+
+        String tokens[] = parser.parseNext();
+
+        System.out.println("Received " + Arrays.toString(tokens));
+
+        String response = null;
+        // String line = input.readLine(); // Read the RESP array header
+        // if (line == null || line.isEmpty()) break;
+      // System.out.println(line);
       // byte[] buffer = new byte[4096];
       // int byteRead;
       // while((byteRead = input.read(buffer)) != -1){
@@ -57,37 +66,24 @@ public class Main{
         // System.out.println(Arrays.toString(messgeString));
         // String command = parseCommand(messgeString).toLowerCase();
         // System.out.println("Command = " + command);
-        switch (line.toLowerCase()) {
+        switch (tokens[0].toLowerCase()) {
           case "echo":
-            String message = input.readLine();
-            clientSocket.getOutputStream().write(makeBulkString(message).getBytes());
-            return;
+            response = makeBulkString(tokens[1]);
+            // clientSocket.getOutputStream().write(makeBulkString(message).getBytes());
+            break;
           case "set":
-            String keyLength = input.readLine().substring(1);
-            String key = input.readLine();
-            String valueLength = input.readLine().substring(1);
-            String value = input.readLine();
-            System.out.println(key +" "+ value);
-            map.put(key , value);
-            clientSocket.getOutputStream().write("+OK\r\n".getBytes());
-            return;
+            map.put(tokens[1] , tokens[2]);
+            response = "+OK\r\n";
+            break;
           case "get":
-            keyLength = input.readLine().substring(1);
-            key = input.readLine();
-            System.out.println("In get");
-            if(map.containsKey(key)) {
-              System.out.println("fetching key for "+ key + " " + map.get(key));
-              clientSocket.getOutputStream().write(makeBulkString(map.get(key)).getBytes());
-              return;
-            }
-            clientSocket.getOutputStream().write("$-1\r\n".getBytes());
+            response = handleGet(tokens[1]);
             break;
 
           default:
-            // clientSocket.getOutputStream().write("+PONG\r\n".getBytes());
             break;
         }
-        // System.out.println(Arrays.toString(messgeString));÷
+
+        clientSocket.getOutputStream().write(response.getBytes());
         
         
       }
@@ -102,6 +98,12 @@ public class Main{
         System.out.println("Error closing client socket: " + e.getMessage());
     }
     }
+  }
+  public static String handleGet(String key) {
+    if(map.containsKey(key)) {
+      return makeBulkString(map.get(key));
+    }
+    return makeBulkString("-1");
   }
   public static String makeBulkString(String message){
     StringBuilder sb = new StringBuilder();
