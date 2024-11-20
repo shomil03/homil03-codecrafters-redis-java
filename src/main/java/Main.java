@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Scanner;
-
+import java.util.*;
 public class Main{
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -55,6 +55,24 @@ public class Main{
       int byteRead;
       while((byteRead = input.read(buffer)) != -1){
         String messgeString[] = new String(buffer , 0 , byteRead , "UTF-8").trim().split("[^a-zA-Z]+");
+
+        String command = parseCommand(messgeString).toLowerCase();
+        switch (command) {
+          case "echo":
+            if(messgeString.length > 2) {
+              // case of array
+              clientSocket.getOutputStream().write(makeStringArray(messgeString).getBytes());
+              return;
+            }
+            else{
+              clientSocket.getOutputStream().write(makeSimpleString(messgeString).getBytes());
+              // case of simple string
+            }
+            break;
+        
+          default:
+            break;
+        }
         System.out.println(Arrays.toString(messgeString));
         // messgeString.toLowerCase();
         // if(messgeString.equals("echo")) {
@@ -73,5 +91,45 @@ public class Main{
         System.out.println("Error closing client socket: " + e.getMessage());
     }
     }
+  }
+  public static String makeSimpleString(String[] message) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("+");
+    boolean take = false;
+    for(String s : message){
+      if(s.length() > 0){
+        if(take){
+          sb.append(s);
+          sb.append(addCRLFTreminator());
+        }
+        else{
+          take = true;
+        }
+      }
+    }
+    return sb.toString();
+  }
+  public static String makeStringArray(String message[]){
+    StringBuilder sb = new StringBuilder();
+    sb.append("$");
+    sb.append(message.length - 2);
+    sb.append(addCRLFTreminator());
+    boolean flag = false;
+    for(int i = 2 ; i < message.length ; i++) {
+      sb.append(message[i]);
+      sb.append(addCRLFTreminator());
+    }
+    return sb.toString();
+  }
+  public static String addCRLFTreminator(){
+    return "\r\n";
+  }
+  public static String parseCommand(String[] message) {
+    for(String s : message) {
+      if(s.length() > 0) {
+        return s;
+      }
+    }
+    return "";
   }
 }
