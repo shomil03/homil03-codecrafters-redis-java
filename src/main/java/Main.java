@@ -80,7 +80,7 @@ public class Main{
             break;
 
           case "ping":
-            response = makeBulkString("Pong");
+            response = makeBulkString("PONG");
             break;
 
           default:
