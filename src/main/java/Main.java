@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 import java.util.*;
 public class Main{
+  static HashMap<String,String> map = new HashMap<>();
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     System.out.println("Logs from your program will appear here!");
@@ -27,14 +28,6 @@ public class Main{
           final Socket clientSocket = serverSocket.accept();
           new Thread(() -> handleClient(clientSocket)).start();
          }
-          // if(sc.next().equals("PING")
-         
-        //  OutputStream output = clientSocket.getOutputStream();
-        //  PrintWriter writer = new PrintWriter(output , true);
-
-        //  output.write("+PONG\r\n".getBytes());
-
-        //  writer.println("+PONG\r\n");
        } catch (IOException e) {
          System.out.println("IOException: " + e.getMessage());
       //  } finally {
@@ -59,11 +52,21 @@ public class Main{
         String command = parseCommand(messgeString).toLowerCase();
         switch (command) {
           case "echo":
-            clientSocket.getOutputStream().write(makeBulkString(messgeString).getBytes());
+            clientSocket.getOutputStream().write(makeBulkString(messgeString,2).getBytes());
             return;
+          case "set":
+            map.put(messgeString[2] , messgeString[3]);
+            clientSocket.getOutputStream().write("+OK\r\n".getBytes());
+            return;
+          case "get":
+            if(map.containsKey(messgeString[2])) {
+              clientSocket.getOutputStream().write(makeBulkString(messgeString,3).getBytes());
+              return;
+            }
+            clientSocket.getOutputStream().write("+OK\r\n".getBytes());
         
           default:
-            clientSocket.getOutputStream().write("+PONG\r\n".getBytes());
+            clientSocket.getOutputStream().write("$-1\r\n".getBytes());
             break;
         }
         System.out.println(Arrays.toString(messgeString));
@@ -82,13 +85,11 @@ public class Main{
     }
     }
   }
-  public static String makeBulkString(String message[]){
+  public static String makeBulkString(String message[],int start){
     StringBuilder sb = new StringBuilder();
     sb.append("$");
-    // sb.append(message.length - 2);
-    // sb.append(addCRLFTreminator());
     boolean flag = false;
-    for(int i = 2 ; i < message.length ; i++) {
+    for(int i = start ; i < message.length ; i++) {
       sb.append(message[i].length());
       sb.append(addCRLFTreminator());
       sb.append(message[i]);
