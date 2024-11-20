@@ -79,6 +79,10 @@ public class Main{
             response = handleGet(tokens[1]);
             break;
 
+          case "ping":
+            response = makeBulkString("Pong");
+            break;
+
           default:
             break;
         }
