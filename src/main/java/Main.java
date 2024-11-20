@@ -49,6 +49,7 @@ public class Main{
       String line = null;
       while((line = input.readLine())  != null) {
       line.toLowerCase();
+      System.out.println(line);
       // byte[] buffer = new byte[4096];
       // int byteRead;
       // while((byteRead = input.read(buffer)) != -1){
@@ -76,9 +77,10 @@ public class Main{
               return;
             }
             clientSocket.getOutputStream().write("$-1\r\n".getBytes());
+            break;
 
           default:
-            clientSocket.getOutputStream().write("$-1\r\n".getBytes());
+            clientSocket.getOutputStream().write("+PONG\r\n".getBytes());
             break;
         }
         // System.out.println(Arrays.toString(messgeString));÷
