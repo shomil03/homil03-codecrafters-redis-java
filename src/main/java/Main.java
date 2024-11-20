@@ -60,11 +60,12 @@ public class Main{
             return;
           case "get":
             if(map.containsKey(messgeString[2])) {
+              System.out.println("fetching key for "+ messgeString[1] + " " + map.get(messgeString[2]));
               clientSocket.getOutputStream().write(makeBulkString(messgeString,3).getBytes());
               return;
             }
-            clientSocket.getOutputStream().write("+OK\r\n".getBytes());
-        
+            clientSocket.getOutputStream().write("$-1\r\n".getBytes());
+
           default:
             clientSocket.getOutputStream().write("$-1\r\n".getBytes());
             break;
