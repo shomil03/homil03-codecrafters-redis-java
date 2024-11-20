@@ -57,7 +57,7 @@ public class Main{
         // System.out.println(Arrays.toString(messgeString));
         // String command = parseCommand(messgeString).toLowerCase();
         // System.out.println("Command = " + command);
-        switch (line) {
+        switch (line.toLowerCase()) {
           case "echo":
             String message = input.readLine();
             clientSocket.getOutputStream().write(makeBulkString(message).getBytes());
@@ -67,6 +67,7 @@ public class Main{
             String key = input.readLine();
             String valueLength = input.readLine().substring(1);
             String value = input.readLine();
+            System.out.println(key +" "+ value);
             map.put(key , value);
             clientSocket.getOutputStream().write("+OK\r\n".getBytes());
             return;
