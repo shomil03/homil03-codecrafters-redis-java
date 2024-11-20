@@ -27,6 +27,13 @@ public class Main{
          while(true) {
           final Socket clientSocket = serverSocket.accept();
           new Thread(() -> handleClient(clientSocket)).start();
+          try{
+            if(clientSocket != null) {
+              clientSocket.close();
+            }
+          }catch(IOException e){
+            System.out.println("IOException: " + e.getMessage());
+          }
          }
        } catch (IOException e) {
          System.out.println("IOException: " + e.getMessage());
