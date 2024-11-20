@@ -48,7 +48,7 @@ public class Main{
       int byteRead;
       while((byteRead = input.read(buffer)) != -1){
         String messgeString[] = new String(buffer , 0 , byteRead , "UTF-8").trim().split("[^a-zA-Z]+");
-
+        System.out.println(Arrays.toString(messgeString));
         String command = parseCommand(messgeString).toLowerCase();
         System.out.println("Command = " + command);
         switch (command) {
