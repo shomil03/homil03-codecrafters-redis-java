@@ -54,7 +54,7 @@ public class Main{
       byte[] buffer = new byte[4096];
       int byteRead;
       while((byteRead = input.read(buffer)) != -1){
-        String messgeString[] = new String(buffer , 0 , byteRead , "UTF-8").trim().split(" ");
+        String messgeString[] = new String(buffer , 0 , byteRead , "UTF-8").trim().split("[^a-zA-Z]+");
         System.out.println(Arrays.toString(messgeString));
         // messgeString.toLowerCase();
         // if(messgeString.equals("echo")) {
