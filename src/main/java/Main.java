@@ -1,11 +1,11 @@
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Scanner;
 import java.util.*;
 public class Main{
   static HashMap<String,String> map = new HashMap<>();
@@ -27,13 +27,6 @@ public class Main{
          while(true) {
           final Socket clientSocket = serverSocket.accept();
           new Thread(() -> handleClient(clientSocket)).start();
-          try{
-            if(clientSocket != null) {
-              clientSocket.close();
-            }
-          }catch(IOException e){
-            System.out.println("IOException: " + e.getMessage());
-          }
          }
        } catch (IOException e) {
          System.out.println("IOException: " + e.getMessage());
@@ -50,27 +43,35 @@ public class Main{
   }
   static void handleClient(Socket clientSocket) {
     try{
-      InputStream input = clientSocket.getInputStream();
-      byte[] buffer = new byte[4096];
-      int byteRead;
-      while((byteRead = input.read(buffer)) != -1){
-        String messgeString[] = new String(buffer , 0 , byteRead , "UTF-8").trim().split("[^a-zA-Z]+");
-        System.out.println(Arrays.toString(messgeString));
-        String command = parseCommand(messgeString).toLowerCase();
-        System.out.println("Command = " + command);
-        switch (command) {
+      BufferedReader input = new BufferedReader(
+          new InputStreamReader(clientSocket.getInputStream()));
+
+      String line = null;
+      while((line = input.readLine())  != null) {
+      // byte[] buffer = new byte[4096];
+      // int byteRead;
+      // while((byteRead = input.read(buffer)) != -1){
+        // String messgeString[] = new String(buffer , 0 , byteRead , "UTF-8").trim().split("[^a-zA-Z]+");
+        // System.out.println(Arrays.toString(messgeString));
+        // String command = parseCommand(messgeString).toLowerCase();
+        // System.out.println("Command = " + command);
+        switch (line) {
           case "echo":
-            clientSocket.getOutputStream().write(makeBulkString(messgeString,2).getBytes());
+            String message = input.readLine();
+            clientSocket.getOutputStream().write(makeBulkString(message).getBytes());
             return;
           case "set":
-            map.put(messgeString[2] , messgeString[3]);
+            String key = input.readLine();
+            String value = input.readLine();
+            map.put(key , value);
             clientSocket.getOutputStream().write("+OK\r\n".getBytes());
             return;
           case "get":
+            key = input.readLine();
             System.out.println("In get");
-            if(map.containsKey(messgeString[2])) {
-              System.out.println("fetching key for "+ messgeString[1] + " " + map.get(messgeString[2]));
-              clientSocket.getOutputStream().write(makeBulkString(messgeString,3).getBytes());
+            if(map.containsKey(key)) {
+              System.out.println("fetching key for "+ key + " " + map.get(key));
+              clientSocket.getOutputStream().write(makeBulkString(map.get(key)).getBytes());
               return;
             }
             clientSocket.getOutputStream().write("$-1\r\n".getBytes());
@@ -79,7 +80,7 @@ public class Main{
             clientSocket.getOutputStream().write("$-1\r\n".getBytes());
             break;
         }
-        System.out.println(Arrays.toString(messgeString));
+        // System.out.println(Arrays.toString(messgeString));÷
         
         
       }
@@ -95,16 +96,15 @@ public class Main{
     }
     }
   }
-  public static String makeBulkString(String message[],int start){
+  public static String makeBulkString(String message){
     StringBuilder sb = new StringBuilder();
     sb.append("$");
-    boolean flag = false;
-    for(int i = start ; i < message.length ; i++) {
-      sb.append(message[i].length());
-      sb.append(addCRLFTreminator());
-      sb.append(message[i]);
-      sb.append(addCRLFTreminator());
-    }
+    // for(int i = start ; i < message.length ; i++) {
+    sb.append(message.length());
+    sb.append(addCRLFTreminator());
+    sb.append(message);
+    sb.append(addCRLFTreminator());
+    // }
     return sb.toString();
   }
   public static String addCRLFTreminator(){
