@@ -59,15 +59,7 @@ public class Main{
         String command = parseCommand(messgeString).toLowerCase();
         switch (command) {
           case "echo":
-            if(messgeString.length > 2) {
-              // case of array
-              clientSocket.getOutputStream().write(makeStringArray(messgeString).getBytes());
-              return;
-            }
-            else{
-              clientSocket.getOutputStream().write(makeSimpleString(messgeString).getBytes());
-              // case of simple string
-            }
+            clientSocket.getOutputStream().write(makeBulkString(messgeString).getBytes());
             break;
         
           default:
@@ -92,30 +84,15 @@ public class Main{
     }
     }
   }
-  public static String makeSimpleString(String[] message) {
-    StringBuilder sb = new StringBuilder();
-    sb.append("+");
-    boolean take = false;
-    for(String s : message){
-      if(s.length() > 0){
-        if(take){
-          sb.append(s);
-          sb.append(addCRLFTreminator());
-        }
-        else{
-          take = true;
-        }
-      }
-    }
-    return sb.toString();
-  }
-  public static String makeStringArray(String message[]){
+  public static String makeBulkString(String message[]){
     StringBuilder sb = new StringBuilder();
     sb.append("$");
-    sb.append(message.length - 2);
-    sb.append(addCRLFTreminator());
+    // sb.append(message.length - 2);
+    // sb.append(addCRLFTreminator());
     boolean flag = false;
     for(int i = 2 ; i < message.length ; i++) {
+      sb.append(message[i].length());
+      sb.append(addCRLFTreminator());
       sb.append(message[i]);
       sb.append(addCRLFTreminator());
     }
