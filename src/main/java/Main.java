@@ -60,17 +60,15 @@ public class Main{
         switch (command) {
           case "echo":
             clientSocket.getOutputStream().write(makeBulkString(messgeString).getBytes());
-            break;
+            return;
         
           default:
+            clientSocket.getOutputStream().write("+PONG\r\n".getBytes());
             break;
         }
         System.out.println(Arrays.toString(messgeString));
-        // messgeString.toLowerCase();
-        // if(messgeString.equals("echo")) {
-          // String RESPbulkString = makeRESPbuldString()
-        // }
-        clientSocket.getOutputStream().write("+PONG\r\n".getBytes());
+        
+        
       }
     }catch(Exception e){
       System.out.println("Client handler exception: " + e.getMessage());
