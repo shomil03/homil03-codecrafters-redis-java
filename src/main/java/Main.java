@@ -84,12 +84,12 @@ public class Main{
           case "config":
             response = handleGet(tokens[2]);
 
-          case "dir":
-            // path -> filename
-            directoryPath = tokens[1];
-            dbFileName = tokens[3];
-            createFile(directoryPath , dbFileName);
-            break;
+          // case "dir":
+          //   // path -> filename
+          //   directoryPath = tokens[1];
+          //   dbFileName = tokens[3];
+          //   createFile(directoryPath , dbFileName);
+          //   break;
 
           default:
             break;
@@ -137,6 +137,7 @@ public class Main{
     }
     return sb.toString();
   }
+
   public static String handleGet(String key) {
     if(key.equals("dir")) {
       return makeRESPArray(new String[]{"dir" , directoryPath});
