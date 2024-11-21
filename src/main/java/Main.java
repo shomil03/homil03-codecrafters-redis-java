@@ -8,10 +8,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.io.File;
 
 public class Main{
   
   static ConcurrentHashMap<String,ValueAndExpiry> map = new ConcurrentHashMap<>();
+  static String directoryPath = "";
+  static String dbFileName = "";
 
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -78,6 +81,13 @@ public class Main{
             response = makeBulkString("PONG", false);
             break;
 
+          case "dir":
+            // path -> filename
+            directoryPath = tokens[1];
+            dbFileName = tokens[3];
+            createFile(directoryPath , dbFileName);
+            break;
+
           default:
             break;
         }
@@ -98,7 +108,39 @@ public class Main{
     }
     }
   }
+
+  public static void createFile(String path , String fileName) {
+    File file = new File(path+fileName);
+    try{
+      boolean isFileCreated = file.createNewFile();
+      if(isFileCreated){
+        System.out.println("File created successfully "+ fileName );
+      }
+      else{
+        System.out.println("File creation unsuccessfull");
+      }
+    }catch(Exception e){
+      System.out.println("IOException: "+ e.getMessage());
+    }
+
+  }
+
+  public static String makeRESPArray(String a[]) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("*");
+    sb.append(a.length);
+    for(String string : a){
+      sb.append(makeBulkString(string, false));
+    }
+    return sb.toString();
+  }
   public static String handleGet(String key) {
+    if(key.equals("dir")) {
+      return makeRESPArray(new String[]{"dir" , directoryPath});
+    }
+    if(key.equals("dbfilename")) {
+      return makeRESPArray(new String[]{key , dbFileName});
+    }
     if(!map.containsKey(key)) {
       return makeBulkString("-1" , true);
     }
