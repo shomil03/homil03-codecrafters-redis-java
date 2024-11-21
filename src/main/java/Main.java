@@ -147,15 +147,15 @@ public class Main{
   public static String handleGet(String key) {
     if(key.equals("dir")) {
       if(directoryPath == null){
-        // return makeRESPArray(new String[]{"dir"});
-        return makeBulkString("-1", true);
+        return makeRESPArray(new String[]{});
+        // return makeBulkString("-1", true);
       }
       return makeRESPArray(new String[]{"dir" , directoryPath});
     }
     if(key.equals("dbfilename")) {
       if(dbFileName == null){
-      //   return  makeRESPArray(new String[]{key});
-        return makeBulkString("-1", true);
+        return  makeRESPArray(new String[]{});
+        // return makeBulkString("-1", true);
       }
 
       return makeRESPArray(new String[]{key , dbFileName});
