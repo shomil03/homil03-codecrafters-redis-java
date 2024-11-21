@@ -175,7 +175,7 @@ public class Main{
     StringBuilder sb = new StringBuilder();
     sb.append("$");
     // for(int i = start ; i < message.length ; i++) {
-    if(!nullString){
+    if(!nullString && message != null){
       sb.append(message.length());
       sb.append(addCRLFTreminator());
     }
