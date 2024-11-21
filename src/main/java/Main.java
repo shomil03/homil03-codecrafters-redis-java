@@ -132,8 +132,8 @@ public class Main{
   public static String makeRESPArray(String a[]) {
     StringBuilder sb = new StringBuilder();
     sb.append("*");
-    sb.append(addCRLFTreminator());
     sb.append(a.length);
+    sb.append(addCRLFTreminator());
     for(String string : a){
       sb.append(makeBulkString(string, false));
     }
