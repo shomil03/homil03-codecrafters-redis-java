@@ -13,8 +13,8 @@ import java.io.File;
 public class Main{
   
   static ConcurrentHashMap<String,ValueAndExpiry> map = new ConcurrentHashMap<>();
-  static String directoryPath = "";
-  static String dbFileName = "";
+  static String directoryPath = null;
+  static String dbFileName = null;
 
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -135,10 +135,10 @@ public class Main{
     sb.append(a.length);
     sb.append(addCRLFTreminator());
     for(String string : a){
-      if(string.equals("")){
-        sb.append(makeBulkString("-1", true));
-        continue;
-      }
+      // if(string.equals("")){
+      //   sb.append(makeBulkString("-1", true));
+      //   continue;
+      // }
       sb.append(makeBulkString(string, false));
     }
     return sb.toString();
@@ -146,15 +146,15 @@ public class Main{
 
   public static String handleGet(String key) {
     if(key.equals("dir")) {
-      if(directoryPath.equals("")){
-        return makeRESPArray(new String[]{"dir"});
-      }
+      // if(directoryPath.equals("")){
+      //   return makeRESPArray(new String[]{"dir"});
+      // }
       return makeRESPArray(new String[]{"dir" , directoryPath});
     }
     if(key.equals("dbfilename")) {
-      if(dbFileName.equals("")){
-        return  makeRESPArray(new String[]{key});
-      }
+      // if(dbFileName.equals("")){
+      //   return  makeRESPArray(new String[]{key});
+      // }
       return makeRESPArray(new String[]{key , dbFileName});
     }
     if(!map.containsKey(key)) {
