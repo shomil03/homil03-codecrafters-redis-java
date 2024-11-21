@@ -146,9 +146,15 @@ public class Main{
 
   public static String handleGet(String key) {
     if(key.equals("dir")) {
+      if(directoryPath.equals("")){
+        return makeRESPArray(new String[]{"dir"});
+      }
       return makeRESPArray(new String[]{"dir" , directoryPath});
     }
     if(key.equals("dbfilename")) {
+      if(dbFileName.equals("")){
+        return  makeRESPArray(new String[]{key});
+      }
       return makeRESPArray(new String[]{key , dbFileName});
     }
     if(!map.containsKey(key)) {
