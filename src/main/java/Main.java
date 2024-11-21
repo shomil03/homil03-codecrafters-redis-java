@@ -174,8 +174,14 @@ public class Main{
   public static String makeBulkString(String message , boolean nullString){
     StringBuilder sb = new StringBuilder();
     sb.append("$");
+    if(message == null) {
+      sb.append("0");
+      sb.append(addCRLFTreminator());
+      sb.append(addCRLFTreminator());
+      return sb.toString();
+    }
     // for(int i = start ; i < message.length ; i++) {
-    if(!nullString && message != null){
+    if(!nullString){
       sb.append(message.length());
       sb.append(addCRLFTreminator());
     }
