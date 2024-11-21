@@ -83,13 +83,14 @@ public class Main{
           
           case "config":
             response = handleGet(tokens[2]);
+            break;
 
-          // case "dir":
-          //   // path -> filename
-          //   directoryPath = tokens[1];
-          //   dbFileName = tokens[3];
-          //   createFile(directoryPath , dbFileName);
-          //   break;
+          case "dir":
+            // path -> filename
+            directoryPath = tokens[1];
+            dbFileName = tokens[3];
+            createFile(directoryPath , dbFileName);
+            break;
 
           default:
             break;
@@ -131,6 +132,7 @@ public class Main{
   public static String makeRESPArray(String a[]) {
     StringBuilder sb = new StringBuilder();
     sb.append("*");
+    sb.append(addCRLFTreminator());
     sb.append(a.length);
     for(String string : a){
       sb.append(makeBulkString(string, false));
