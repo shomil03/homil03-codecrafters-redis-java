@@ -135,6 +135,10 @@ public class Main{
     sb.append(a.length);
     sb.append(addCRLFTreminator());
     for(String string : a){
+      if(string.equals("")){
+        sb.append(makeBulkString("-1", true));
+        continue;
+      }
       sb.append(makeBulkString(string, false));
     }
     return sb.toString();
@@ -160,6 +164,7 @@ public class Main{
     }
     return makeBulkString(map.get(key).value , false);
   }
+
   public static String makeBulkString(String message , boolean nullString){
     StringBuilder sb = new StringBuilder();
     sb.append("$");
