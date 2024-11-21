@@ -20,6 +20,14 @@ public class Main{
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     System.out.println("Logs from your program will appear here!");
 
+    for(int i = 0 ; i < args.length ; i++){
+      if(args.equals("--dir")){
+        directoryPath = args[i+1];
+      }
+      if(args.equals("--dbfilename")){
+        dbFileName = args[i+1];
+      }
+    }
        ServerSocket serverSocket = null;
       //  Socket clientSocket = null;
        int port = 6379;
