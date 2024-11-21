@@ -80,6 +80,9 @@ public class Main{
           case "ping":
             response = makeBulkString("PONG", false);
             break;
+          
+          case "config":
+            response = handleGet(tokens[2]);
 
           case "dir":
             // path -> filename
