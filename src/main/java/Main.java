@@ -66,7 +66,7 @@ public class Main{
             if(tokens.length > 3)
             map.put(tokens[1] , new ValueAndExpiry(tokens[2], System.currentTimeMillis()+Integer.parseInt(tokens[4])));
             else{
-              map.put(tokens[1] , new ValueAndExpiry(tokens[2], null));
+              map.put(tokens[1] , new ValueAndExpiry(tokens[2], Long.MAX_VALUE));
             }
             response = "+OK\r\n";
             break;
@@ -102,6 +102,7 @@ public class Main{
     if(!map.containsKey(key)) {
       return makeBulkString("-1" , true);
     }
+    
     long currentTime = System.currentTimeMillis();
     long keyExpiryTime = map.get(key).expiry;
 
