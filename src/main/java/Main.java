@@ -63,7 +63,7 @@ public class Main{
             response = makeBulkString(tokens[1] , false);
             break;
           case "set":
-            if(tokens.length > 2)
+            if(tokens.length > 3)
             map.put(tokens[1] , new ValueAndExpiry(tokens[2], System.currentTimeMillis()+Integer.parseInt(tokens[4])));
             else{
               map.put(tokens[1] , new ValueAndExpiry(tokens[2], null));
