@@ -60,7 +60,7 @@ public class Main{
         
         switch (tokens[0].toLowerCase()) {
           case "echo":
-            response = makeBulkString(tokens[1]);
+            response = makeBulkString(tokens[1] , false);
             break;
           case "set":
             if(tokens.length > 2)
@@ -75,7 +75,7 @@ public class Main{
             break;
 
           case "ping":
-            response = makeBulkString("PONG");
+            response = makeBulkString("PONG", false);
             break;
 
           default:
@@ -100,23 +100,25 @@ public class Main{
   }
   public static String handleGet(String key) {
     if(!map.containsKey(key)) {
-      return makeBulkString("-1");
+      return makeBulkString("-1" , true);
     }
     long currentTime = System.currentTimeMillis();
     long keyExpiryTime = map.get(key).expiry;
 
     if(currentTime > keyExpiryTime) {
       map.remove(key);
-      return makeBulkString("-1");
+      return makeBulkString("-1" , true);
     }
-    return makeBulkString(map.get(key).value);
+    return makeBulkString(map.get(key).value , false);
   }
-  public static String makeBulkString(String message){
+  public static String makeBulkString(String message , boolean nullString){
     StringBuilder sb = new StringBuilder();
     sb.append("$");
     // for(int i = start ; i < message.length ; i++) {
-    sb.append(message.length());
-    sb.append(addCRLFTreminator());
+    if(!nullString){
+      sb.append(message.length());
+      sb.append(addCRLFTreminator());
+    }
     sb.append(message);
     sb.append(addCRLFTreminator());
     // }
