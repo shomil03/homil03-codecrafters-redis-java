@@ -66,7 +66,7 @@ public class Main{
         String tokens[] = parser.parseNext();
 
         System.out.println("Received " + Arrays.toString(tokens));
-
+        System.out.println(directoryPath +" "+ dbFileName);
         String response = null;
         
         switch (tokens[0].toLowerCase()) {
