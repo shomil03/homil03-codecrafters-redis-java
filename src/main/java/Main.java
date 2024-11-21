@@ -21,10 +21,10 @@ public class Main{
     System.out.println("Logs from your program will appear here!");
 
     for(int i = 0 ; i < args.length ; i++){
-      if(args.equals("--dir")){
+      if(args[i].equals("--dir")){
         directoryPath = args[i+1];
       }
-      if(args.equals("--dbfilename")){
+      if(args[i].equals("--dbfilename")){
         dbFileName = args[i+1];
       }
     }
