@@ -7,10 +7,12 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Main{
   
-  static HashMap<String,String> map = new HashMap<>();
+  static ConcurrentHashMap<String,ValueAndExpiry> map = new ConcurrentHashMap<>();
+
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     System.out.println("Logs from your program will appear here!");
@@ -47,8 +49,7 @@ public class Main{
     try{
 
       Parser parser = new Parser(clientSocket.getInputStream());
-      // BufferedReader input = new BufferedReader(
-          // new InputStreamReader(clientSocket.getInputStream()));
+     
       while (true) {
 
         String tokens[] = parser.parseNext();
@@ -56,23 +57,17 @@ public class Main{
         System.out.println("Received " + Arrays.toString(tokens));
 
         String response = null;
-        // String line = input.readLine(); // Read the RESP array header
-        // if (line == null || line.isEmpty()) break;
-      // System.out.println(line);
-      // byte[] buffer = new byte[4096];
-      // int byteRead;
-      // while((byteRead = input.read(buffer)) != -1){
-        // String messgeString[] = new String(buffer , 0 , byteRead , "UTF-8").trim().split("[^a-zA-Z]+");
-        // System.out.println(Arrays.toString(messgeString));
-        // String command = parseCommand(messgeString).toLowerCase();
-        // System.out.println("Command = " + command);
+        
         switch (tokens[0].toLowerCase()) {
           case "echo":
             response = makeBulkString(tokens[1]);
-            // clientSocket.getOutputStream().write(makeBulkString(message).getBytes());
             break;
           case "set":
-            map.put(tokens[1] , tokens[2]);
+            if(tokens.length > 2)
+            map.put(tokens[1] , new ValueAndExpiry(tokens[2], System.currentTimeMillis()+Integer.parseInt(tokens[4])));
+            else{
+              map.put(tokens[1] , new ValueAndExpiry(tokens[2], null));
+            }
             response = "+OK\r\n";
             break;
           case "get":
@@ -104,10 +99,17 @@ public class Main{
     }
   }
   public static String handleGet(String key) {
-    if(map.containsKey(key)) {
-      return makeBulkString(map.get(key));
+    if(!map.containsKey(key)) {
+      return makeBulkString("-1");
     }
-    return makeBulkString("-1");
+    long currentTime = System.currentTimeMillis();
+    long keyExpiryTime = map.get(key).expiry;
+
+    if(currentTime > keyExpiryTime) {
+      map.remove(key);
+      return makeBulkString("-1");
+    }
+    return makeBulkString(map.get(key).value);
   }
   public static String makeBulkString(String message){
     StringBuilder sb = new StringBuilder();
