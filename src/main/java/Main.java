@@ -85,7 +85,7 @@ public class Main{
             response = handleGet(tokens[2]);
             break;
 
-          case "dir":
+          case "--dir":
             // path -> filename
             directoryPath = tokens[1];
             dbFileName = tokens[3];
