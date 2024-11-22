@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +10,7 @@ public class RDBParser {
     public static List<String> readRDBFile( String file) {
         List<String> keys = new ArrayList<>();
         try{
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("file.txt")));
             String header = readHeader(reader);
             System.out.println("Header: "+ header);
             while(true) {
