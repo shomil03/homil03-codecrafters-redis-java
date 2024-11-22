@@ -9,10 +9,9 @@ public class RDBParser {
         List<String> keys = new ArrayList<>();
         try{
             BufferedReader reader = new BufferedReader(new FileReader(file));
-
+            String header = readHeader(reader);
+            System.out.println("Header: "+ header);
             while(true) {
-                String header = readHeader(reader);
-                System.out.println("Header: "+ header);
 
                 int type = reader.read();
 
