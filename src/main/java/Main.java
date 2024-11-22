@@ -132,10 +132,11 @@ public class Main{
 
   public static void readFile() {
     try{
-      BufferedReader reader = new BufferedReader(new FileReader(directoryPath+dbFileName));
+      BufferedReader reader = new BufferedReader(new FileReader(directoryPath+"/"+dbFileName));
 
       String line = "";
       while((line = reader.readLine()) != null) {
+        System.out.println("Error here");
         System.out.println("File content: " + line);
       }
     }catch(Exception e){
