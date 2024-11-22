@@ -10,7 +10,7 @@ public class RDBParser {
     public static List<String> readRDBFile( String file) {
         List<String> keys = new ArrayList<>();
         try{
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("file.txt")));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
             String header = readHeader(reader);
             System.out.println("Header: "+ header);
             while(true) {
