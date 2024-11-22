@@ -96,6 +96,10 @@ public class Main{
             break;
 
           case "keys":
+            RDBParser fileReader = new RDBParser();
+            List<String> values = fileReader.readRDBFile( directoryPath + "/"+ dbFileName);
+            response = makeRESPArray(values.toArray(new String[0]));
+
           // read rdb file
 
             // int index = tokens[1].indexOf("*");
@@ -106,7 +110,7 @@ public class Main{
             // else{
             //   // give all keys
             // }
-            readFile();
+            
             break;
 
 
