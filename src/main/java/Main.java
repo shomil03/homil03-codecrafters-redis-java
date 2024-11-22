@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.io.File;
@@ -136,7 +137,7 @@ public class Main{
 
       String line = "";
       while((line = reader.readLine()) != null) {
-        System.out.println("File content: " + Arrays.toString(line.getBytes()));
+        System.out.println("File content: " + Arrays.toString(line.getBytes(StandardCharsets.ISO_8859_1)));
       }
     }catch(Exception e){
       System.out.println("Error in reading file content");
