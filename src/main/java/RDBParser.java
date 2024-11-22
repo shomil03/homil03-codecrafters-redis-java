@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,69 +11,89 @@ public class RDBParser {
     public static List<String> readRDBFile( String file) {
         List<String> keys = new ArrayList<>();
         try{
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-            String header = readHeader(reader);
-            System.out.println("Header: "+ header);
-            while(true) {
+            FileInputStream inputStream = new FileInputStream(file);
+            byte[] buffer = new byte[8192]; // Buffer size (8 KB)
+            int bytesRead;
+            int bufferIndex = 0;
+            int bufferEnd = 0;
 
-                int type = reader.read();
+            // Read the header (first 9 bytes)
+            String header = readHeader(inputStream, buffer);
+            System.out.println("Header: " + header);
 
-                if(type == -1) break;
+            while (true) {
+                // Ensure buffer has data to read
+                if (bufferIndex >= bufferEnd) {
+                    bytesRead = inputStream.read(buffer);
+                    if (bytesRead == -1) {
+                        break; // End of file
+                    }
+                    bufferIndex = 0;
+                    bufferEnd = bytesRead;
+                }
 
-                if(type == 0xFF) {
+                // Read the type byte
+                int type = buffer[bufferIndex++] & 0xFF;
+
+                if (type == 0xFF) {
                     System.out.println("Break type 0xFF");
-                    break;
+                    break; // End of RDB file
                 }
 
-
-                if(type == 0x00) {
-                    String key = readLengthEncodedString(reader);
-                    String value = readLengthEncodedString(reader);
+                if (type == 0x00) {
+                    String key = readLengthEncodedString(buffer, inputStream, bufferIndex, bufferEnd);
+                    String value = readLengthEncodedString(buffer, inputStream, bufferIndex, bufferEnd);
                     keys.add(value);
-                    System.out.println("key in file : "+ key +"\n" + "value in file: "+ value);
+                    System.out.println("Key in file: " + key + "\nValue in file: " + value);
                 }
-                
             }
-            return keys;
-
-        }catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("Error reading file content: " + e.getMessage());
         }
-
         return keys;
     }
 
-    public static String readHeader(BufferedReader reader) throws IOException {
-        char[] header = new char[9];
-        if(reader.read(header) != 9) {
-            throw new  IOException("Invalid RDB file header ");
+    private static String readHeader(FileInputStream inputStream, byte[] buffer) throws IOException {
+        byte[] header = new byte[9];
+        int bytesRead = inputStream.read(header);
+        if (bytesRead != 9) {
+            throw new IOException("Invalid RDB file header");
         }
         return new String(header);
     }
 
-    public static String readLengthEncodedString(BufferedReader reader) throws IOException {
-
-        int length = readLength(reader);
-        char data[] = new char[length];
-        int read = reader.read(data);
+    private static String readLengthEncodedString(byte[] buffer, FileInputStream inputStream, int bufferIndex, int bufferEnd) throws IOException {
+        int length = readLength(buffer, inputStream, bufferIndex, bufferEnd);
+        byte[] data = new byte[length];
+        int bytesRead = inputStream.read(data);
+        if (bytesRead != length) {
+            throw new IOException("Error reading length-encoded string");
+        }
         return new String(data);
     }
 
+    private static int readLength(byte[] buffer, FileInputStream inputStream, int bufferIndex, int bufferEnd) throws IOException {
+        int firstByte;
+        if (bufferIndex >= bufferEnd) {
+            firstByte = inputStream.read();
+            if (firstByte == -1) {
+                throw new IOException("Unexpected end of file");
+            }
+        } else {
+            firstByte = buffer[bufferIndex++] & 0xFF;
+        }
 
-    public static int readLength(BufferedReader reader) throws IOException {
-        int firstByte = reader.read();
-
-        if((firstByte & 0xC0) == 0x00) {
+        if ((firstByte & 0xC0) == 0x00) {
             return firstByte & 0x3F;
-        }
-        else if((firstByte & 0xC0) == 0x40) {
-            int secondByte = reader.read();
+        } else if ((firstByte & 0xC0) == 0x40) {
+            int secondByte = inputStream.read();
+            if (secondByte == -1) {
+                throw new IOException("Unexpected end of file");
+            }
             return ((firstByte & 0x3F) << 8) | secondByte;
-        }
-        else if(firstByte == 0x80) {
+        } else if (firstByte == 0x80) {
             throw new IOException("Encoded lengths are not supported in this parser.");
-        }
-        else{
+        } else {
             throw new IOException("Invalid length encoding.");
         }
     }
