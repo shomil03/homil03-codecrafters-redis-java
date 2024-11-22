@@ -136,10 +136,10 @@ public class Main{
 
       String line = "";
       while((line = reader.readLine()) != null) {
-        System.out.println("Error here");
-        System.out.println("File content: " + line);
+        System.out.println("File content: " + Arrays.toString(line.getBytes()));
       }
     }catch(Exception e){
+      System.out.println("Error in reading file content");
       System.out.println("IOException: " + e.getMessage());
     }
   }
