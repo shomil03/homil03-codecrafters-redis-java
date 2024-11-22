@@ -18,6 +18,7 @@ public class RDBParser {
                 if(type == -1) break;
 
                 if(type == 0xFF) {
+                    System.out.println("Break type 0xFF");
                     break;
                 }
 
@@ -41,7 +42,9 @@ public class RDBParser {
 
     public static String readHeader(BufferedReader reader) throws IOException {
         char[] header = new char[9];
-
+        if(reader.read(header) != 9) {
+            throw new  IOException("Invalid RDB file header ");
+        }
         return new String(header);
     }
 
