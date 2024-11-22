@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.io.File;
+import java.io.FileReader;
 
 public class Main{
   
@@ -93,12 +94,20 @@ public class Main{
             response = handleGet(tokens[2]);
             break;
 
-          case "--dir":
-            // path -> filename
-            directoryPath = tokens[1];
-            dbFileName = tokens[3];
-            createFile(directoryPath , dbFileName);
+          case "keys":
+          // read rdb file
+
+            // int index = tokens[1].indexOf("*");
+            // String prefix = tokens[1].substring(0,index);
+            // if(prefix.length() > 0) {
+            //   // got prefix
+            // }
+            // else{
+            //   // give all keys
+            // }
+            readFile();
             break;
+
 
           default:
             break;
@@ -118,6 +127,19 @@ public class Main{
     } catch (IOException e) {
         System.out.println("Error closing client socket: " + e.getMessage());
     }
+    }
+  }
+
+  public static void readFile() {
+    try{
+      BufferedReader reader = new BufferedReader(new FileReader(directoryPath+dbFileName));
+
+      String line = "";
+      while((line = reader.readLine()) != null) {
+        System.out.println("File content: " + line);
+      }
+    }catch(Exception e){
+      System.out.println("IOException: " + e.getMessage());
     }
   }
 
