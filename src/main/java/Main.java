@@ -97,8 +97,8 @@ public class Main{
 
           case "keys":
             RDBParser fileReader = new RDBParser();
-            List<String> values = fileReader.readRDBFile( directoryPath + "/"+ dbFileName);
-            response = makeRESPArray(values.toArray(new String[0]));
+            String value = fileReader.readRDBFile( directoryPath + "/"+ dbFileName);
+            response = makeRESPArray(new String[]{value});
 
           // read rdb file
 
