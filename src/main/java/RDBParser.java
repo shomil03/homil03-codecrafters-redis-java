@@ -29,7 +29,7 @@ public class RDBParser {
               System.out.println("Version = " +
                                  new String(version, StandardCharsets.UTF_8));
               int b;
-            // header:
+            header:
               while ((b = fis.read()) != -1) {
                 switch (b) {
                 case 0xFF:
@@ -49,7 +49,7 @@ public class RDBParser {
                   b = fis.read();
                   fis.readNBytes(lengthEncoding(fis, b));
                   fis.readNBytes(lengthEncoding(fis, b));
-                  // break header;
+                  break header;
                 case 0xFA:
                   System.out.println("AUX");
                   break;
@@ -87,7 +87,7 @@ public class RDBParser {
                 map.put(key, value);
                 System.out.println("Map inside fileReader: "+ map);
                 // break;
-                
+
               }
         }catch(Exception e) {
             System.out.println("Error in reading file content: " + e.getMessage());
