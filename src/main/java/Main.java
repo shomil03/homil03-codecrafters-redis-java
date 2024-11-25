@@ -95,11 +95,11 @@ public class Main{
             response = handleGet(tokens[2]);
             break;
           
-          // case "get":
-          //   RDBParser filParser = new RDBParser();
-          //   String key = filParser.readRDBFile(directoryPath +"/" + dbFileName);
-          //   response = makeRESPArray(new String[]{key});
-          //   break;
+          case "keys":
+            RDBParser filParser = new RDBParser();
+            String key = filParser.readRDBFile(directoryPath +"/" + dbFileName);
+            response = makeRESPArray(new String[]{key});
+            break;
 
           // case "keys":
            
