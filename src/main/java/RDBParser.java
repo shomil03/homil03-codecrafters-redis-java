@@ -13,11 +13,11 @@ import java.util.List;
 
 public class RDBParser {
     // public static List<String> readRDBFile( String file) {
+        static HashMap<String , String> map = new HashMap<>();
         public static String readRDBFile( String file) {
         List<String> keys = new ArrayList<>();
         String key ="";
         String value = "";
-        HashMap<String , String> map = new HashMap<>();
         try{
             InputStream fis = new FileInputStream(new File(file));
               byte[] redis = new byte[5];

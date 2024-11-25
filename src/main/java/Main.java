@@ -94,12 +94,15 @@ public class Main{
           case "config":
             response = handleGet(tokens[2]);
             break;
+          
+          // case "get":
+          //   RDBParser filParser = new RDBParser();
+          //   String key = filParser.readRDBFile(directoryPath +"/" + dbFileName);
+          //   response = makeRESPArray(new String[]{key});
+          //   break;
 
-          case "keys":
-            RDBParser fileReader = new RDBParser();
-            String value = fileReader.readRDBFile( directoryPath + "/"+ dbFileName);
-            response = makeRESPArray(new String[]{value});
-
+          // case "keys":
+           
           // read rdb file
 
             // int index = tokens[1].indexOf("*");
@@ -111,7 +114,7 @@ public class Main{
             //   // give all keys
             // }
             
-            break;
+            // break;
 
 
           default:
@@ -197,6 +200,15 @@ public class Main{
       return makeRESPArray(new String[]{key , dbFileName});
     }
     if(!map.containsKey(key)) {
+      // check key in file
+      RDBParser fileReader = new RDBParser();
+      // String value = fileReader.readRDBFile( directoryPath + "/"+ dbFileName);
+      fileReader.readRDBFile( directoryPath + "/"+ dbFileName);
+      if(fileReader.map.containsKey(key)){
+        return fileReader.map.get(key);
+      }
+      // response = makeRESPArray(new String[]{value});
+
       return makeBulkString("-1" , true);
     }
     
