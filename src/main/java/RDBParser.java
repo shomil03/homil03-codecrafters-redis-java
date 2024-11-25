@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class RDBParser {
@@ -15,6 +16,8 @@ public class RDBParser {
         public static String readRDBFile( String file) {
         List<String> keys = new ArrayList<>();
         String key ="";
+        String value = "";
+        HashMap<String , String> map = new HashMap<>();
         try{
             InputStream fis = new FileInputStream(new File(file));
               byte[] redis = new byte[5];
@@ -26,7 +29,7 @@ public class RDBParser {
               System.out.println("Version = " +
                                  new String(version, StandardCharsets.UTF_8));
               int b;
-            header:
+            // header:
               while ((b = fis.read()) != -1) {
                 switch (b) {
                 case 0xFF:
@@ -46,7 +49,7 @@ public class RDBParser {
                   b = fis.read();
                   fis.readNBytes(lengthEncoding(fis, b));
                   fis.readNBytes(lengthEncoding(fis, b));
-                  break header;
+                  // break header;
                 case 0xFA:
                   System.out.println("AUX");
                   break;
@@ -72,6 +75,16 @@ public class RDBParser {
                 System.out.println("strLength == " + strLength);
                 byte[] bytes = fis.readNBytes(strLength);
                 key = new String(bytes);
+
+                int valueLength = lengthEncoding(fis, b);
+                b = fis.read();
+                if(valueLength == 0) {
+                  valueLength = b;
+                }
+                bytes = fis.readNBytes(valueLength);
+                value = new String(bytes);
+                System.out.println("Value for string : " + value +" key : "+ key);
+                map.put(key, value);
                 break;
               }
         }catch(Exception e) {
