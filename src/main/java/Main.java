@@ -204,6 +204,7 @@ public class Main{
       RDBParser fileReader = new RDBParser();
       // String value = fileReader.readRDBFile( directoryPath + "/"+ dbFileName);
       fileReader.readRDBFile( directoryPath + "/"+ dbFileName);
+      System.out.println("Map in fileReader: "+ fileReader.map);
       if(fileReader.map.containsKey(key)){
         return fileReader.map.get(key);
       }
