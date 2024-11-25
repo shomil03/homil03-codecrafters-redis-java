@@ -14,7 +14,7 @@ import java.util.List;
 public class RDBParser {
     // public static List<String> readRDBFile( String file) {
         static HashMap<String , String> map = new HashMap<>();
-        public static String readRDBFile( String file) {
+        public static String[] readRDBFile( String file) {
         List<String> keys = new ArrayList<>();
         String key ="";
         String value = "";
@@ -75,7 +75,7 @@ public class RDBParser {
                 System.out.println("strLength == " + strLength);
                 byte[] bytes = fis.readNBytes(strLength);
                 key = new String(bytes);
-
+                keys.add(key);
                 int valueLength = lengthEncoding(fis, b);
                 b = fis.read();
                 if(valueLength == 0) {
@@ -92,7 +92,7 @@ public class RDBParser {
         }catch(Exception e) {
             System.out.println("Error in reading file content: " + e.getMessage());
         }
-        return key;
+        return keys.toArray(new String[keys.size()]);
             // out.printf("*1\r\n$%d\r\n%s\r\n", key.length(), key);
             // out.flush();
     }

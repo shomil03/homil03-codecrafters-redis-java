@@ -97,24 +97,10 @@ public class Main{
           
           case "keys":
             RDBParser filParser = new RDBParser();
-            String key = filParser.readRDBFile(directoryPath +"/" + dbFileName);
-            response = makeRESPArray(new String[]{key});
+            String keys[] = filParser.readRDBFile(directoryPath +"/" + dbFileName);
+            response = makeRESPArray(keys);
             break;
 
-          // case "keys":
-           
-          // read rdb file
-
-            // int index = tokens[1].indexOf("*");
-            // String prefix = tokens[1].substring(0,index);
-            // if(prefix.length() > 0) {
-            //   // got prefix
-            // }
-            // else{
-            //   // give all keys
-            // }
-            
-            // break;
 
 
           default:
