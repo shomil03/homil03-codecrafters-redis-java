@@ -85,7 +85,8 @@ public class RDBParser {
                 value = new String(bytes);
                 System.out.println("Value for string : " + value +" key : "+ key);
                 map.put(key, value);
-                break;
+                System.out.println("Map inside fileReader: "+ map);
+                // break;
               }
         }catch(Exception e) {
             System.out.println("Error in reading file content: " + e.getMessage());
