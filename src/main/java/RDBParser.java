@@ -92,6 +92,7 @@ public class RDBParser {
         }catch(Exception e) {
             System.out.println("Error in reading file content: " + e.getMessage());
         }
+        System.out.println("keys: " + keys);
         return keys.toArray(new String[keys.size()]);
             // out.printf("*1\r\n$%d\r\n%s\r\n", key.length(), key);
             // out.flush();
