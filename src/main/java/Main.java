@@ -206,7 +206,7 @@ public class Main{
       fileReader.readRDBFile( directoryPath + "/"+ dbFileName);
       System.out.println("Map in fileReader: "+ fileReader.map);
       if(fileReader.map.containsKey(key)){
-        return fileReader.map.get(key);
+        return makeBulkString(fileReader.map.get(key),false);
       }
       // response = makeRESPArray(new String[]{value});
 
