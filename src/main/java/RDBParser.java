@@ -85,6 +85,7 @@ public class RDBParser {
               value = new String(bytes);
               System.out.println("key = " + key + ".");
               System.out.println("value = " + value + ".");
+              keys.add(key);
               map.put(key, value);
             }
             //   byte[] redis = new byte[5];
