@@ -217,6 +217,7 @@ public class Main{
   }
 
   public static String handleKeyWithExpiry(String key, long keyExpiryTime , String value) {
+    System.out.println("key expiry Time: " + keyExpiryTime);
     long currentTime = System.currentTimeMillis();
     if(currentTime > keyExpiryTime) {
       map.remove(key);

@@ -61,7 +61,7 @@ public class RDBParser {
             System.out.println("header done");
             // now key value pairs
             while ((b = fis.read()) != -1) { // value type
-              long timestamp = Long.MIN_VALUE;
+              long timestamp = Long.MAX_VALUE;
               byte bytes[];
               if(b == 0xFF) {
                 break;
