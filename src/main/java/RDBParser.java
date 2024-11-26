@@ -68,7 +68,7 @@ public class RDBParser {
               }
 
               // check for expiry
-              
+              System.out.println("value-type = " + b);
               // expiry in seconds
               if(b == 253) {
                 bytes = fis.readNBytes(4);
@@ -76,6 +76,7 @@ public class RDBParser {
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
                 timestamp = buffer.getLong();
                 System.out.println("timestamp : "+ timestamp);
+                b = fis.read();
               }
 
               if(b == 252) {
@@ -84,10 +85,11 @@ public class RDBParser {
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
                 timestamp = buffer.getLong();
                 System.out.println("timestamp : "+ timestamp);
+                b = fis.read();
               }
               // String key = "";
               // String value = "";
-              System.out.println("value-type = " + b);
+              
               b = fis.read();
               System.out.println(" b = " + Integer.toBinaryString(b));
               System.out.println("reading keys");
