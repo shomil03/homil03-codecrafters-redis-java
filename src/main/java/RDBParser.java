@@ -56,10 +56,9 @@ public class RDBParser {
                   break;
                 }
               }
+              b = fis.read();
               System.out.println("header done");
               // now key value pairs
-
-
 
               while ((b = fis.read()) != -1 && ( b != 255)) { 
                 // value type
