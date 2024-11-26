@@ -84,76 +84,76 @@ public class RDBParser {
                 // switch  case to decode different type of data
                 switch(valueType) {
                   // when data is list type
-                  case 9:
-                    List<String> list = new ArrayList<>();
-                    int listLength = lengthEncoding(fis, b);
-                    System.out.println("List length: "+ listLength );
+                  // case 9:
+                  //   List<String> list = new ArrayList<>();
+                  //   int listLength = lengthEncoding(fis, b);
+                  //   System.out.println("List length: "+ listLength );
 
-                    for(int i = 0 ; i < listLength ; i++) {
-                      int elementLength = lengthEncoding(fis, fis.read());
-                      byte[] elementByte = fis.readNBytes(elementLength);
-                      String element = new String(elementByte , StandardCharsets.UTF_8);
-                      list.add(element);
-                    }
-                    map.put(key ,list.toArray(new String[0]));
-                    break;
+                  //   for(int i = 0 ; i < listLength ; i++) {
+                  //     int elementLength = lengthEncoding(fis, fis.read());
+                  //     byte[] elementByte = fis.readNBytes(elementLength);
+                  //     String element = new String(elementByte , StandardCharsets.UTF_8);
+                  //     list.add(element);
+                  //   }
+                  //   map.put(key ,list.toArray(new String[0]));
+                  //   break;
 
-                  case 5:
-                  case 10:
-                    System.out.println("Encoding zipList"); 
-                    int ziplistLength = lengthEncoding(fis, fis.read());
-                    byte[] ziplistBytes = fis.readNBytes(ziplistLength);
-                    int index = 0;
+                  // case 5:
+                  // case 10:
+                  //   System.out.println("Encoding zipList"); 
+                  //   int ziplistLength = lengthEncoding(fis, fis.read());
+                  //   byte[] ziplistBytes = fis.readNBytes(ziplistLength);
+                  //   int index = 0;
                     
-                    int totalLength = decodeLength(ziplistBytes, index);
-                    index += lengthBytesUsed(totalLength);
+                  //   int totalLength = decodeLength(ziplistBytes, index);
+                  //   index += lengthBytesUsed(totalLength);
 
-                    int numberOfEntries = decodeLength(ziplistBytes, index);
-                    index += lengthBytesUsed(numberOfEntries);
+                  //   int numberOfEntries = decodeLength(ziplistBytes, index);
+                  //   index += lengthBytesUsed(numberOfEntries);
 
-                    List<String> listValues = new ArrayList<>();
-                    for(int i = 0 ; i < numberOfEntries ; i++) {
+                  //   List<String> listValues = new ArrayList<>();
+                  //   for(int i = 0 ; i < numberOfEntries ; i++) {
 
-                      int elementLength = decodeLength(ziplistBytes, index);
-                      index += lengthBytesUsed(elementLength);
+                  //     int elementLength = decodeLength(ziplistBytes, index);
+                  //     index += lengthBytesUsed(elementLength);
 
-                      String element = new String(ziplistBytes , index , elementLength , StandardCharsets.UTF_8);
-                      index += elementLength;
+                  //     String element = new String(ziplistBytes , index , elementLength , StandardCharsets.UTF_8);
+                  //     index += elementLength;
 
-                      listValues.add(element);
-                      System.out.println("ZipList Entry: " + element);
+                  //     listValues.add(element);
+                  //     System.out.println("ZipList Entry: " + element);
 
-                    }
-                    map.put(key, listValues.toArray(new String[0]));
-                    System.out.println("Decoded ziplist for key " + key + ": " + listValues);
-                    break;
+                  //   }
+                  //   map.put(key, listValues.toArray(new String[0]));
+                  //   System.out.println("Decoded ziplist for key " + key + ": " + listValues);
+                  //   break;
                     
 
-                  case 6: // Hash encoded as Ziplist
-                    System.out.println("Value type: Hash (Ziplist)");
-                    ziplistLength = lengthEncoding(fis, fis.read());
-                    ziplistBytes = fis.readNBytes(ziplistLength);
+                  // case 6: // Hash encoded as Ziplist
+                  //   System.out.println("Value type: Hash (Ziplist)");
+                  //   ziplistLength = lengthEncoding(fis, fis.read());
+                  //   ziplistBytes = fis.readNBytes(ziplistLength);
 
-                    index = 0;
-                    Map<String, String> hash = new HashMap<>();
-                    while (index < ziplistBytes.length) {
-                        int fieldLength = decodeLength(ziplistBytes, index);
-                        index += lengthBytesUsed(fieldLength);
+                  //   index = 0;
+                  //   Map<String, String> hash = new HashMap<>();
+                  //   while (index < ziplistBytes.length) {
+                  //       int fieldLength = decodeLength(ziplistBytes, index);
+                  //       index += lengthBytesUsed(fieldLength);
 
-                        String field = new String(ziplistBytes, index, fieldLength, StandardCharsets.UTF_8);
-                        index += fieldLength;
+                  //       String field = new String(ziplistBytes, index, fieldLength, StandardCharsets.UTF_8);
+                  //       index += fieldLength;
 
-                        int valueLength = decodeLength(ziplistBytes, index);
-                        index += lengthBytesUsed(valueLength);
+                  //       int valueLength = decodeLength(ziplistBytes, index);
+                  //       index += lengthBytesUsed(valueLength);
 
-                        value = new String(ziplistBytes, index, valueLength, StandardCharsets.UTF_8);
-                        index += valueLength;
+                  //       value = new String(ziplistBytes, index, valueLength, StandardCharsets.UTF_8);
+                  //       index += valueLength;
 
-                        hash.put(field, value);
-                        System.out.println("Field: " + field + ", Value: " + value);
-                    }
-                    map.put(key, new String[]{hash.toString()});
-                    break;
+                  //       hash.put(field, value);
+                  //       System.out.println("Field: " + field + ", Value: " + value);
+                  //   }
+                  //   map.put(key, new String[]{hash.toString()});
+                  //   break;
                   
                   default:
                     int valueLength = lengthEncoding(fis, b);
