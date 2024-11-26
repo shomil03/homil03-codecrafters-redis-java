@@ -93,7 +93,7 @@ public class RDBParser {
                       String element = new String(elementByte , StandardCharsets.UTF_8);
                       list.add(element);
                     }
-                    map.put(key ,list.toArray(new String[list.size()]));
+                    map.put(key ,list.toArray(new String[0]));
                     break;
                   
                   default:
