@@ -99,6 +99,7 @@ public class RDBParser {
                     break;
 
                   case 5:
+                  case 10:
                     System.out.println("Encoding zipList"); 
                     int ziplistLength = lengthEncoding(fis, fis.read());
                     byte[] ziplistBytes = fis.readNBytes(ziplistLength);
