@@ -60,6 +60,7 @@ public class RDBParser {
               while ((b = fis.read()) != -1 && ( b != 255)) { // value type
                 System.out.println("value-type = " + b);
                 b = fis.read();
+                int valueType = b;
                 System.out.println("value-type = " + b);
                 //                                b = fis.read();
                 //                                System.out.println("value-type
@@ -80,7 +81,7 @@ public class RDBParser {
 
                 // decoding values
                 // switch  case to decode different type of data
-                switch(b) {
+                switch(valueType) {
                   // when data is list type
                   case 9:
                     List<String> list = new ArrayList<>();
