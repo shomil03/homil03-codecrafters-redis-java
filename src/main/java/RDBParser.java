@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class RDBParser {
             System.out.println("header done");
             // now key value pairs
             while ((b = fis.read()) != -1) { // value type
-
+              long timestamp;
               byte bytes[];
               if(b == 0xFF) {
                 break;
@@ -71,7 +72,10 @@ public class RDBParser {
               // expiry in seconds
               if(b == 253) {
                 bytes = fis.readNBytes(4);
-                System.out.println("timestamp : "+ bytes.toString());
+                ByteBuffer buffer = ByteBuffer.wrap(bytes);
+                buffer.order(ByteOrder.LITTLE_ENDIAN);
+                timestamp = buffer.getLong();
+                System.out.println("timestamp : "+ timestamp);
               }
 
               if(b == 252) {
