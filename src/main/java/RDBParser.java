@@ -77,7 +77,7 @@ public class RDBParser {
                 strLength = b; // FAAAAAAALSCH
               }
               System.out.println("strLength == " + strLength);
-              byte[] bytes = fis.readNBytes(strLength-1);
+              byte[] bytes = fis.readNBytes(strLength);
               key = new String(bytes);
               // // read value
               b = fis.read();
@@ -86,10 +86,10 @@ public class RDBParser {
                 // valueLength = b & 00111111;
                 valueLength = b; // FAAAAAAALSCH
               }
-              bytes = fis.readNBytes(valueLength-1);
+              bytes = fis.readNBytes(valueLength);
               value = new String(bytes);
-              System.out.println("key = " + key + ".");
-              System.out.println("value = " + value + ".");
+              System.out.println("key = " + key);
+              System.out.println("value = " + value);
               keys.add(key);
               map.put(key, value);
             }
@@ -180,9 +180,9 @@ public class RDBParser {
         }catch(Exception e) {
             System.out.println("Error in reading file content: " + e.getMessage());
         }
-        keys.remove(0);
+        // keys.remove(0);
         System.out.println("keys: " + keys);
-
+        System.out.println("map : ");
         System.out.println(map);
 
         return keys.toArray(new String[0]);
