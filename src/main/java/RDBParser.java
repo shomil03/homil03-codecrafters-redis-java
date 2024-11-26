@@ -123,27 +123,21 @@ public class RDBParser {
         }
         return new String(header);
     }
-     private static int lengthEncoding(InputStream is, int b) throws IOException {
-        int length = 100;
-        int first2bits = b & 11000000;
-        if (first2bits == 0) {
-            System.out.println("00");
-            length = 1;
-        } else if (first2bits == 128) {
-            System.out.println("01");
-            length = 2;
-        } else if (first2bits == 256) {
-            System.out.println("10");
-            ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-            buffer.put(is.readNBytes(4));
-            buffer.rewind();
-            length = 1 + buffer.getInt();
-        } else if (first2bits == 256 + 128) {
-            System.out.println("11");
-            length = 1; // special format
-        }
-        return length;
-    }
- 
-
-}
+    private static int lengthEncoding(InputStream is, int b) throws IOException {
+      int length = 100;
+      int first2bits = b & 0b11000000; // Mask to get the first 2 bits
+      if (first2bits == 0) {
+          // Simple encoding, 1 byte for length
+          length = b & 0b00111111; // Mask out the first 2 bits to get the actual length
+      } else if (first2bits == 0b01000000) {
+          // Another type of encoding, where the length is 2 bytes
+          length = b & 0b00111111;
+      } else if (first2bits == 0b10000000) {
+          // 4-byte length encoding
+          byte[] lengthBytes = is.readNBytes(4);
+          ByteBuffer buffer = ByteBuffer.wrap(lengthBytes);
+          length = buffer.getInt();
+      }
+      return length;
+  }
+}  
