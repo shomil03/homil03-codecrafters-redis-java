@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RDBParser {
     // public static List<String> readRDBFile( String file) {
@@ -96,18 +97,44 @@ public class RDBParser {
                     }
                     map.put(key ,list.toArray(new String[0]));
                     break;
+
+                  case 6: // Hash encoded as Ziplist
+                    System.out.println("Value type: Hash (Ziplist)");
+                    int ziplistLength = lengthEncoding(fis, fis.read());
+                    byte[] ziplistBytes = fis.readNBytes(ziplistLength);
+
+                    int index = 0;
+                    Map<String, String> hash = new HashMap<>();
+                    while (index < ziplistBytes.length) {
+                        int fieldLength = decodeLength(ziplistBytes, index);
+                        index += lengthBytesUsed(fieldLength);
+
+                        String field = new String(ziplistBytes, index, fieldLength, StandardCharsets.UTF_8);
+                        index += fieldLength;
+
+                        int valueLength = decodeLength(ziplistBytes, index);
+                        index += lengthBytesUsed(valueLength);
+
+                        value = new String(ziplistBytes, index, valueLength, StandardCharsets.UTF_8);
+                        index += valueLength;
+
+                        hash.put(field, value);
+                        System.out.println("Field: " + field + ", Value: " + value);
+                    }
+                    map.put(key, new String[]{hash.toString()});
+                    break;
                   
                   default:
-                  int valueLength = lengthEncoding(fis, b);
-                  b = fis.read();
-                  if(valueLength == 0) {
-                    valueLength = b;
-                  }
-                  bytes = fis.readNBytes(valueLength);
-                  value = new String(bytes);
-                  System.out.println("Value for string : " + value +" key : "+ key);
-                  map.put(key, new String[]{value});
-                  break;
+                    int valueLength = lengthEncoding(fis, b);
+                    b = fis.read();
+                    if(valueLength == 0) {
+                      valueLength = b;
+                    }
+                    bytes = fis.readNBytes(valueLength);
+                    value = new String(bytes);
+                    System.out.println("Value for string : " + value +" key : "+ key);
+                    map.put(key, new String[]{new String(value)});
+                    break;
 
 
                 }
@@ -158,6 +185,16 @@ public class RDBParser {
       length = 1; // special format
     }
     return length;
+  }
+  private static int decodeLength(byte[] ziplist, int index) {
+      int length = ziplist[index] & 0xFF; // Single-byte length
+      if ((length & 0xC0) == 0xC0) { // Multi-byte length
+          length = ((ziplist[index] & 0x3F) << 8) | (ziplist[index + 1] & 0xFF);
+      }
+      return length;
+  }
+  private static int lengthBytesUsed(int length) {
+    return (length & 0xC0) == 0xC0 ? 2 : 1;
   }
 
 }
