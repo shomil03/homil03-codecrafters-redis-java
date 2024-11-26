@@ -60,7 +60,10 @@ public class RDBParser {
               System.out.println("header done");
               // now key value pairs
 
-              while ((b = fis.read()) != -1 && ( b != 255)) { 
+              while ((b = fis.read()) != -1 ) { 
+
+                if(b == 0xFF){break;}
+
                 // value type
                 System.out.println("value-type = " + b);
                 b = fis.read();
@@ -120,27 +123,27 @@ public class RDBParser {
         }
         return new String(header);
     }
-    private static int lengthEncoding(InputStream is, int b) throws IOException {
-    int length = 100;
-    int first2bits = b & 11000000;
-    if (first2bits == 0) {
-      System.out.println("00");
-      length = 0;
-    } else if (first2bits == 128) {
-      System.out.println("01");
-      length = 2;
-    } else if (first2bits == 256) {
-      System.out.println("10");
-      ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-      buffer.put(is.readNBytes(4));
-      buffer.rewind();
-      length = 1 + buffer.getInt();
-    } else if (first2bits == 256 + 128) {
-      System.out.println("11");
-      length = 1; // special format
+     private static int lengthEncoding(InputStream is, int b) throws IOException {
+        int length = 100;
+        int first2bits = b & 11000000;
+        if (first2bits == 0) {
+            System.out.println("00");
+            length = 1;
+        } else if (first2bits == 128) {
+            System.out.println("01");
+            length = 2;
+        } else if (first2bits == 256) {
+            System.out.println("10");
+            ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+            buffer.put(is.readNBytes(4));
+            buffer.rewind();
+            length = 1 + buffer.getInt();
+        } else if (first2bits == 256 + 128) {
+            System.out.println("11");
+            length = 1; // special format
+        }
+        return length;
     }
-    return length;
-  }
  
 
 }
