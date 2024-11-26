@@ -98,12 +98,42 @@ public class RDBParser {
                     map.put(key ,list.toArray(new String[0]));
                     break;
 
-                  case 6: // Hash encoded as Ziplist
-                    System.out.println("Value type: Hash (Ziplist)");
+                  case 5:
+                    System.out.println("Encoding zipList"); 
                     int ziplistLength = lengthEncoding(fis, fis.read());
                     byte[] ziplistBytes = fis.readNBytes(ziplistLength);
-
                     int index = 0;
+                    
+                    int totalLength = decodeLength(ziplistBytes, index);
+                    index += lengthBytesUsed(totalLength);
+
+                    int numberOfEntries = decodeLength(ziplistBytes, index);
+                    index += lengthBytesUsed(numberOfEntries);
+
+                    List<String> listValues = new ArrayList<>();
+                    for(int i = 0 ; i < numberOfEntries ; i++) {
+
+                      int elementLength = decodeLength(ziplistBytes, index);
+                      index += lengthBytesUsed(elementLength);
+
+                      String element = new String(ziplistBytes , index , elementLength , StandardCharsets.UTF_8);
+                      index += elementLength;
+
+                      listValues.add(element);
+                      System.out.println("ZipList Entry: " + element);
+
+                    }
+                    map.put(key, listValues.toArray(new String[0]));
+                    System.out.println("Decoded ziplist for key " + key + ": " + listValues);
+                    break;
+                    
+
+                  case 6: // Hash encoded as Ziplist
+                    System.out.println("Value type: Hash (Ziplist)");
+                    ziplistLength = lengthEncoding(fis, fis.read());
+                    ziplistBytes = fis.readNBytes(ziplistLength);
+
+                    index = 0;
                     Map<String, String> hash = new HashMap<>();
                     while (index < ziplistBytes.length) {
                         int fieldLength = decodeLength(ziplistBytes, index);
