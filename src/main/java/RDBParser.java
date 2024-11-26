@@ -124,7 +124,11 @@ public class RDBParser {
         }
         // keys.remove(0);
         System.out.println("keys: " + keys);
-        System.out.println("map : ");
+        // System.out.println("map : ");
+        // printing map
+        for(Map.Entry<String , ValueAndExpiry> entry : map.entrySet()) {
+          System.out.println(entry.getKey() + " value: "+ entry.getValue().value + " expiry: "+ entry.getValue().expiry);
+        }
         System.out.println(map);
 
         return keys.toArray(new String[0]);
