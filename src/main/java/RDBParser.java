@@ -78,7 +78,7 @@ public class RDBParser {
                   strLength = b;
                 }
 
-                
+
                 // b = fis.read();
                 System.out.println("strLength == " + strLength);
 
@@ -98,6 +98,7 @@ public class RDBParser {
 
                 System.out.println("key : " + key +" value: "+ value);
                 map.put(key, value);
+                keys.add(key);
 
                 // break;
 
