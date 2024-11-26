@@ -58,7 +58,11 @@ public class RDBParser {
               }
               System.out.println("header done");
               // now key value pairs
-              while ((b = fis.read()) != -1 && ( b != 255)) { // value type
+
+
+
+              while ((b = fis.read()) != -1 && ( b != 255)) { 
+                // value type
                 System.out.println("value-type = " + b);
                 b = fis.read();
                 // System.out.println("value-type = " + b);
@@ -70,6 +74,11 @@ public class RDBParser {
 
                 int strLength = lengthEncoding(fis, b);
 
+                if(strLength == 1) {
+                  strLength = b;
+                }
+
+                
                 // b = fis.read();
                 System.out.println("strLength == " + strLength);
 
