@@ -13,7 +13,7 @@ import java.util.List;
 
 public class RDBParser {
     // public static List<String> readRDBFile( String file) {
-        static HashMap<String , String> map = new HashMap<>();
+        static HashMap<String , String[]> map = new HashMap<>();
         public static String[] readRDBFile( String file) {
         List<String> keys = new ArrayList<>();
         String key ="";
@@ -65,6 +65,7 @@ public class RDBParser {
                 //                                System.out.println("value-type
                 //                                = " + b);
                 System.out.println(" b = " + Integer.toBinaryString(b));
+
                 System.out.println("reading keys");
                 int strLength = lengthEncoding(fis, b);
                 b = fis.read();
@@ -76,15 +77,45 @@ public class RDBParser {
                 byte[] bytes = fis.readNBytes(strLength);
                 key = new String(bytes);
                 keys.add(key);
-                int valueLength = lengthEncoding(fis, b);
-                b = fis.read();
-                if(valueLength == 0) {
-                  valueLength = b;
+
+                // decoding values
+                // switch  case to decode different type of data
+                switch(b) {
+                  // when data is list type
+                  case 9:
+                    List<String> list = new ArrayList<>();
+                    int listLength = lengthEncoding(fis, b);
+                    System.out.println("List length: "+ listLength );
+
+                    for(int i = 0 ; i < listLength ; i++) {
+                      int elementLength = lengthEncoding(fis, fis.read());
+                      byte[] elementByte = fis.readNBytes(elementLength);
+                      String element = new String(elementByte , StandardCharsets.UTF_8);
+                      list.add(element);
+                    }
+                    map.put(key ,list.toArray(new String[list.size()]));
+                    break;
+                  
+                  default:
+                  int valueLength = lengthEncoding(fis, b);
+                  b = fis.read();
+                  if(valueLength == 0) {
+                    valueLength = b;
+                  }
+                  bytes = fis.readNBytes(valueLength);
+                  value = new String(bytes);
+                  System.out.println("Value for string : " + value +" key : "+ key);
+                  map.put(key, new String[]{value});
+                  break;
+
+
                 }
-                bytes = fis.readNBytes(valueLength);
-                value = new String(bytes);
-                System.out.println("Value for string : " + value +" key : "+ key);
-                map.put(key, value);
+                
+                
+                
+                
+                
+                
                 System.out.println("Map inside fileReader: "+ map);
                 // break;
 
