@@ -60,6 +60,10 @@ public class RDBParser {
             System.out.println("header done");
             // now key value pairs
             while ((b = fis.read()) != -1) { // value type
+
+              if(b == 0xFF) {
+                break;
+              }
               // String key = "";
               // String value = "";
               System.out.println("value-type = " + b);
@@ -73,7 +77,7 @@ public class RDBParser {
                 strLength = b; // FAAAAAAALSCH
               }
               System.out.println("strLength == " + strLength);
-              byte[] bytes = fis.readNBytes(strLength);
+              byte[] bytes = fis.readNBytes(strLength-1);
               key = new String(bytes);
               // // read value
               b = fis.read();
@@ -82,7 +86,7 @@ public class RDBParser {
                 // valueLength = b & 00111111;
                 valueLength = b; // FAAAAAAALSCH
               }
-              bytes = fis.readNBytes(valueLength);
+              bytes = fis.readNBytes(valueLength-1);
               value = new String(bytes);
               System.out.println("key = " + key + ".");
               System.out.println("value = " + value + ".");
