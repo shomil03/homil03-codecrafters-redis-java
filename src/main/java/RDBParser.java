@@ -61,8 +61,22 @@ public class RDBParser {
             // now key value pairs
             while ((b = fis.read()) != -1) { // value type
 
+              byte bytes[];
               if(b == 0xFF) {
                 break;
+              }
+
+              // check for expiry
+              
+              // expiry in seconds
+              if(b == 253) {
+                bytes = fis.readNBytes(4);
+                System.out.println("timestamp : "+ bytes.toString());
+              }
+
+              if(b == 252) {
+                bytes = fis.readNBytes(8);
+                System.out.println("timestamp : "+ bytes.toString());
               }
               // String key = "";
               // String value = "";
@@ -77,7 +91,7 @@ public class RDBParser {
                 strLength = b; // FAAAAAAALSCH
               }
               System.out.println("strLength == " + strLength);
-              byte[] bytes = fis.readNBytes(strLength);
+              bytes = fis.readNBytes(strLength);
               key = new String(bytes);
               // // read value
               b = fis.read();
@@ -93,90 +107,7 @@ public class RDBParser {
               keys.add(key);
               map.put(key, value);
             }
-            //   byte[] redis = new byte[5];
-            //   byte[] version = new byte[4];
-            //   fis.read(redis);
-            //   fis.read(version);
-            //   System.out.println("Magic String = " +
-            //                      new String(redis, StandardCharsets.UTF_8));
-            //   System.out.println("Version = " +
-            //                      new String(version, StandardCharsets.UTF_8));
-            //   int b;
-            // header:
-            //   while ((b = fis.read()) != -1) {
-            //     switch (b) {
-            //     case 0xFF:
-            //       System.out.println("EOF");
-            //       break;
-            //     case 0xFE:
-            //       System.out.println("SELECTDB");
-            //       break;
-            //     case 0xFD:
-            //       System.out.println("EXPIRETIME");
-            //       break;
-            //     case 0xFC:
-            //       System.out.println("EXPIRETIMEMS");
-            //       break;
-            //     case 0xFB:
-            //       System.out.println("RESIZEDB");
-            //       b = fis.read();
-            //       fis.readNBytes(lengthEncoding(fis, b));
-            //       fis.readNBytes(lengthEncoding(fis, b));
-            //       break header;
-            //     case 0xFA:
-            //       System.out.println("AUX");
-            //       break;
-            //     }
-            //   }
-            //   b = fis.read();
-            //   System.out.println("header done");
-            //   // now key value pairs
-
-            //   while ((b = fis.read()) != -1 ) { 
-
-            //     if(b == 0xFF){break;}
-
-            //     // value type
-            //     System.out.println("value-type = " + b);
-            //     b = fis.read();
-            //     // System.out.println("value-type = " + b);
-
-            //     System.out.println(" b = " + Integer.toBinaryString(b));
-
-
-            //     System.out.println("reading keys");
-
-            //     int strLength = lengthEncoding(fis, b);
-
-            //     if(strLength == 1) {
-            //       strLength = b;
-            //     }
-
-
-            //     // b = fis.read();
-            //     System.out.println("strLength == " + strLength);
-
-            //     byte[] bytes = fis.readNBytes(strLength);
-            //     key = new String(bytes);
-
-            //     b = fis.read();
-
-            //     int valueLength = lengthEncoding(fis, b);
-
-            //     if(valueLength == 1) {
-            //       valueLength = b;
-            //     }
-
-            //     bytes = fis.readNBytes(valueLength);
-            //     value = new String(bytes);
-
-            //     System.out.println("key : " + key +" value: "+ value);
-            //     map.put(key, value);
-            //     keys.add(key);
-
-            //     // break;
-
-              // }
+           
         }catch(Exception e) {
             System.out.println("Error in reading file content: " + e.getMessage());
         }
