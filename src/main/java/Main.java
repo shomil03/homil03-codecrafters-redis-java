@@ -190,9 +190,9 @@ public class Main{
       RDBParser fileReader = new RDBParser();
       // String value = fileReader.readRDBFile( directoryPath + "/"+ dbFileName);
       fileReader.readRDBFile( directoryPath + "/"+ dbFileName);
-      System.out.println("Map in fileReader: "+ fileReader.map);
+      // System.out.println("Map in fileReader: "+ fileReader.map);
       if(fileReader.map.containsKey(key)){
-
+        System.out.println("Key found in file: ");
         // if(fileReader.expiryKey.containsKey(key)) {
           return handleKeyWithExpiry(key, fileReader.map.get(key).expiry , fileReader.map.get(key).value);
         // }
