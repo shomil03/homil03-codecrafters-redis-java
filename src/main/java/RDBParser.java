@@ -80,7 +80,10 @@ public class RDBParser {
 
               if(b == 252) {
                 bytes = fis.readNBytes(8);
-                System.out.println("timestamp : "+ bytes.toString());
+                ByteBuffer buffer = ByteBuffer.wrap(bytes);
+                buffer.order(ByteOrder.LITTLE_ENDIAN);
+                timestamp = buffer.getLong();
+                System.out.println("timestamp : "+ timestamp);
               }
               // String key = "";
               // String value = "";
