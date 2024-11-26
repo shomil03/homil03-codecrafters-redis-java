@@ -177,7 +177,10 @@ public class RDBParser {
         }
         keys.remove(0);
         System.out.println("keys: " + keys);
-        return keys.toArray(new String[keys.size()]);
+
+        System.out.println(map);
+
+        return keys.toArray(new String[0]);
             // out.printf("*1\r\n$%d\r\n%s\r\n", key.length(), key);
             // out.flush();
     }
