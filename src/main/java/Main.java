@@ -192,21 +192,37 @@ public class Main{
       fileReader.readRDBFile( directoryPath + "/"+ dbFileName);
       System.out.println("Map in fileReader: "+ fileReader.map);
       if(fileReader.map.containsKey(key)){
-        return makeBulkString(fileReader.map.get(key),false);
+
+        // if(fileReader.expiryKey.containsKey(key)) {
+          return handleKeyWithExpiry(key, fileReader.map.get(key).expiry , fileReader.map.get(key).value);
+        // }
+        // return makeBulkString(fileReader.map.get(key),false);
       }
       // response = makeRESPArray(new String[]{value});
 
       return makeBulkString("-1" , true);
     }
     
-    long currentTime = System.currentTimeMillis();
-    long keyExpiryTime = map.get(key).expiry;
+    // handle key-value with expiry
 
+    return handleKeyWithExpiry(key, map.get(key).expiry , map.get(key).value);
+    // long currentTime = System.currentTimeMillis();
+    // long keyExpiryTime = map.get(key).expiry;
+
+    // if(currentTime > keyExpiryTime) {
+    //   map.remove(key);
+    //   return makeBulkString("-1" , true);
+    // }
+    // return makeBulkString(map.get(key).value , false);
+  }
+
+  public static String handleKeyWithExpiry(String key, long keyExpiryTime , String value) {
+    long currentTime = System.currentTimeMillis();
     if(currentTime > keyExpiryTime) {
       map.remove(key);
-      return makeBulkString("-1" , true);
+      return makeBulkString("-1", true);
     }
-    return makeBulkString(map.get(key).value , false);
+    return makeBulkString(value, false);
   }
 
   public static String makeBulkString(String message , boolean nullString){

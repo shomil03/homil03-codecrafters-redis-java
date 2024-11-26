@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class RDBParser {
     // public static List<String> readRDBFile( String file) {
-        static HashMap<String , String> map = new HashMap<>();
+        static HashMap<String , ValueAndExpiry> map = new HashMap<>();
         public static String[] readRDBFile( String file) {
         List<String> keys = new ArrayList<>();
         String key ="";
@@ -61,7 +61,7 @@ public class RDBParser {
             System.out.println("header done");
             // now key value pairs
             while ((b = fis.read()) != -1) { // value type
-              long timestamp;
+              long timestamp = Long.MIN_VALUE;
               byte bytes[];
               if(b == 0xFF) {
                 break;
@@ -114,7 +114,9 @@ public class RDBParser {
               System.out.println("key = " + key);
               System.out.println("value = " + value);
               keys.add(key);
-              map.put(key, value);
+              ValueAndExpiry ve = new ValueAndExpiry(value, timestamp);
+              map.put(key, ve);
+              
             }
            
         }catch(Exception e) {
