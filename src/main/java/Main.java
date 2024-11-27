@@ -81,7 +81,7 @@ public class Main{
 
         System.out.println("Received " + Arrays.toString(tokens));
         System.out.println(directoryPath +" "+ dbFileName);
-        String response = null;
+        String response = "";
         
         switch (tokens[0].toLowerCase()) {
           case "echo":
