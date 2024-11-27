@@ -18,6 +18,9 @@ public class Main{
   static String directoryPath = null;
   static String dbFileName = null;
   static String role = "master";
+  static int masterPort = 6379;
+  static String master_replicationID = "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb";
+  static String master_replicationOffset = "0";
 
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -27,6 +30,7 @@ public class Main{
     for(int i = 0 ; i < args.length ; i++){
       if(args[i].equals("--replicaof")) {
         role = "slave";
+
       }
       if(args[i].equals("--port")) {
         port = Integer.parseInt(args[i+1]);
@@ -111,6 +115,8 @@ public class Main{
 
           case "info":
             response = makeBulkString("role:"+role, false);
+            response += makeBulkString("master_replid:"+master_replicationID, false);
+            response += makeBulkString("master_repl_offset:"+master_replicationOffset, false);
             break;
 
 
