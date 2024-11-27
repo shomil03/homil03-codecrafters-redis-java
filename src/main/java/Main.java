@@ -165,12 +165,14 @@ public class Main{
           case "psync":
                 response = makeBulkString("+FULLRESYNC "+master_replicationID+" "+master_replicationOffset+"\r\n", false);
                 clientSocket.getOutputStream().write(response.getBytes());
-                String rdbHexFile = "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
+                String emptyRDBFile = "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
+                byte[] bytes = Base64.getDecoder().decode(emptyRDBFile);
+
                 // String rdbBinaryFile = "";
                 // for(int i = 0 ; i < rdbHexFile.length()  ; i++) {
                 //   rdbBinaryFile += Integer.toBinaryString(Integer.parseInt(rdbHexFile.charAt(i)+"", 16));
                 // }
-                response = "$"+rdbHexFile.length()+"\r\n"+rdbHexFile;
+                response = "$"+emptyRDBFile.length()+"\r\n"+emptyRDBFile;
                 break;
 
           default:
