@@ -49,19 +49,21 @@ public class Main{
           slaveSocket.getOutputStream().write(pingMaster.getBytes());
           slaveSocket.getInputStream().read();
           slaveSocket.getOutputStream().flush();
+
           String sendRRPLCONF = makeRESPArray(new String[]{"REPLCONF" , "listening-port", ""+port});
           slaveSocket.getOutputStream().write(sendRRPLCONF.getBytes());
           slaveSocket.getInputStream().read();
           slaveSocket.getOutputStream().flush();
+
           String sendCAPA = makeRESPArray(new String[]{"REPLCONF" ,"capa" , "psync2" });
           slaveSocket.getOutputStream().write(sendCAPA.getBytes());
           slaveSocket.getInputStream().read();
           slaveSocket.getOutputStream().flush();
 
-          // String sendPSYNC = makeRESPArray(new String[]{"PSYNC" ,"?", "-1"});
-          // slaveSocket.getOutputStream().write(sendPSYNC.getBytes());
-          slaveSocket.getInputStream().read();
-          slaveSocket.getOutputStream().flush();
+          String sendPSYNC = makeRESPArray(new String[]{"PSYNC" ,"?", "-1"});
+          slaveSocket.getOutputStream().write(sendPSYNC.getBytes());
+          // slaveSocket.getInputStream().read();
+          // slaveSocket.getOutputStream().flush();
 
         }catch(Exception e) {
           System.out.println("error in connection to master port: "+ e.getMessage());
