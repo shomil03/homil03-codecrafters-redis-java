@@ -172,7 +172,9 @@ public class Main{
                 // for(int i = 0 ; i < rdbHexFile.length()  ; i++) {
                 //   rdbBinaryFile += Integer.toBinaryString(Integer.parseInt(rdbHexFile.charAt(i)+"", 16));
                 // }
-                response = "$"+bytes.length+"\r\n"+bytes.toString();
+                response = "$"+bytes.length+"\r\n";
+                clientSocket.getOutputStream().write(response.getBytes());
+                clientSocket.getOutputStream().write(bytes);
                 break;
 
           default:
