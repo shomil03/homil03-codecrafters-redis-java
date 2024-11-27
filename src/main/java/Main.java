@@ -170,7 +170,7 @@ public class Main{
                 for(int i = 0 ; i < rdbHexFile.length()  ; i++) {
                   rdbBinaryFile += Integer.toBinaryString(Integer.parseInt(rdbHexFile.charAt(i)+"", 16));
                 }
-                response = "$"+rdbBinaryFile.length()+"+\r\n"+rdbBinaryFile;
+                response = "$"+rdbBinaryFile.length()+"\r\n"+rdbBinaryFile;
                 break;
 
           default:
