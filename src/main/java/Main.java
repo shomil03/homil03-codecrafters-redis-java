@@ -162,6 +162,10 @@ public class Main{
               response = "+OK\r\n";
               break;  
 
+          case "psync":
+                response = makeBulkString("+FULLRESYNC "+master_replicationID+" "+master_replicationOffset+"\r\n", false);
+                break;
+
           default:
             break;
         }
