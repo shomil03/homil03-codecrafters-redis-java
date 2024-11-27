@@ -49,7 +49,7 @@ public class Main{
           slaveSocket.getOutputStream().write(pingMaster.getBytes());
           slaveSocket.getInputStream().read();
           slaveSocket.getOutputStream().flush();
-          String sendRRPLCONF = makeRESPArray(new String[]{"REPLCONF" , "listening-port"+ ""+masterPort});
+          String sendRRPLCONF = makeRESPArray(new String[]{"REPLCONF" , "listening-port", ""+masterPort});
           slaveSocket.getOutputStream().write(sendRRPLCONF.getBytes());
           slaveSocket.getInputStream().read();
           slaveSocket.getOutputStream().flush();
