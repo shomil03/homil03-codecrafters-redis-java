@@ -104,6 +104,10 @@ public class Main{
             response = makeRESPArray(keys);
             break;
 
+          case "info":
+            response = makeBulkString("role:master", false);
+            break;
+
 
 
           default:
