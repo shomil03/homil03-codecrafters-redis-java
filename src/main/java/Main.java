@@ -22,6 +22,7 @@ public class Main{
   static String master_replicationID = "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb";
   static String master_replicationOffset = "0";
   static String masterIP = "";
+  static String hostName = "";
 
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -32,12 +33,16 @@ public class Main{
       if(args[i].equals("--replicaof")) {
         role = "slave";
         i++;
-        masterIP = args[i];
-        i++;
-        masterPort = Integer.parseInt(args[i]);
+        String temp[] = args[i].split(" ");
+        masterPort = Integer.parseInt(temp[1].substring(0 , temp[1].length()-1));
+        hostName = temp[0].substring(1);
+
+        System.out.println("Master Port: "+ masterPort);
+        System.out.println("Hostname: "+ hostName);
+
 
         try{
-          Socket slaveSocket = new Socket(masterIP, masterPort);
+          Socket slaveSocket = new Socket(hostName , masterPort);
           String messageToMaster = "*1\r\n$4\r\nPING\r\n";
           slaveSocket.getOutputStream().write(messageToMaster.getBytes());
 
