@@ -157,7 +157,7 @@ public class Main{
              break;
 
           case "replconf":
-              response = makeBulkString("+OK", false);
+              response = "+OK\r\n";
               break;  
 
           default:
