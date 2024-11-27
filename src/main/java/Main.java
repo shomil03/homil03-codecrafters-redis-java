@@ -59,7 +59,7 @@ public class Main{
           slaveSocket.getOutputStream().flush();
 
           String sendPSYNC = makeRESPArray(new String[]{"PSYNC" ,"?", "-1"});
-          slaveSocket.getOutputStream().write(sendCAPA.getBytes());
+          slaveSocket.getOutputStream().write(sendPSYNC.getBytes());
           slaveSocket.getInputStream().read();
           slaveSocket.getOutputStream().flush();
 
