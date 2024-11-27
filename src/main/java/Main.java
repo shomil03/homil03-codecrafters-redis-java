@@ -58,6 +58,11 @@ public class Main{
           slaveSocket.getInputStream().read();
           slaveSocket.getOutputStream().flush();
 
+          String sendPSYNC = makeRESPArray(new String[]{"PSYNC" ,"?", "-1"});
+          slaveSocket.getOutputStream().write(sendCAPA.getBytes());
+          slaveSocket.getInputStream().read();
+          slaveSocket.getOutputStream().flush();
+
         }catch(Exception e) {
           System.out.println("error in connection to master port: "+ e.getMessage());
         }
