@@ -17,12 +17,17 @@ public class Main{
   static ConcurrentHashMap<String,ValueAndExpiry> map = new ConcurrentHashMap<>();
   static String directoryPath = null;
   static String dbFileName = null;
+  static String role = "master";
 
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     System.out.println("Logs from your program will appear here!");
+    
     int port = 6379;
     for(int i = 0 ; i < args.length ; i++){
+      if(args[i].equals("--replicaof")) {
+        role = "slave";
+      }
       if(args[i].equals("--port")) {
         port = Integer.parseInt(args[i+1]);
       }
@@ -105,7 +110,7 @@ public class Main{
             break;
 
           case "info":
-            response = makeBulkString("role:master", false);
+            response = makeBulkString("role:"+role, false);
             break;
 
 
