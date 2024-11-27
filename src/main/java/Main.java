@@ -58,8 +58,8 @@ public class Main{
           slaveSocket.getInputStream().read();
           slaveSocket.getOutputStream().flush();
 
-          String sendPSYNC = makeRESPArray(new String[]{"PSYNC" ,"?", "-1"});
-          slaveSocket.getOutputStream().write(sendPSYNC.getBytes());
+          // String sendPSYNC = makeRESPArray(new String[]{"PSYNC" ,"?", "-1"});
+          // slaveSocket.getOutputStream().write(sendPSYNC.getBytes());
           slaveSocket.getInputStream().read();
           slaveSocket.getOutputStream().flush();
 
