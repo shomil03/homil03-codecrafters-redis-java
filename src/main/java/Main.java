@@ -47,10 +47,13 @@ public class Main{
           Socket slaveSocket = new Socket(hostName , masterPort);
           String pingMaster = "*1\r\n$4\r\nPING\r\n";
           slaveSocket.getOutputStream().write(pingMaster.getBytes());
+          slaveSocket.getOutputStream().flush();
           String sendRRPLCONF = makeRESPArray(new String[]{"REPLCONF" , "listening-port"+ ""+masterPort});
           slaveSocket.getOutputStream().write(sendRRPLCONF.getBytes());
+          slaveSocket.getOutputStream().flush();
           String sendCAPA = makeRESPArray(new String[]{"REPLCONF" ,"capa" , "psync2" });
           slaveSocket.getOutputStream().write(sendCAPA.getBytes());
+          slaveSocket.getOutputStream().flush();
 
         }catch(Exception e) {
           System.out.println("error in connection to master port: "+ e.getMessage());
