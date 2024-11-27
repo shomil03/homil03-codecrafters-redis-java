@@ -21,6 +21,7 @@ public class Main{
   static int masterPort = 6379;
   static String master_replicationID = "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb";
   static String master_replicationOffset = "0";
+  static String masterIP = "";
 
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -30,6 +31,19 @@ public class Main{
     for(int i = 0 ; i < args.length ; i++){
       if(args[i].equals("--replicaof")) {
         role = "slave";
+        i++;
+        masterIP = args[i];
+        i++;
+        masterPort = Integer.parseInt(args[i]);
+
+        try{
+          Socket slaveSocket = new Socket(masterIP, masterPort);
+          String messageToMaster = "*1\r\n$4\r\nPING\r\n";
+          slaveSocket.getOutputStream().write(messageToMaster.getBytes());
+
+        }catch(Exception e) {
+          System.out.println("error in connection to master port: "+ e.getMessage());
+        }
 
       }
       if(args[i].equals("--port")) {
