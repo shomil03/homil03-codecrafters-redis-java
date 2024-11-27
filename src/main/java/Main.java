@@ -33,9 +33,11 @@ public class Main{
       if(args[i].equals("--replicaof")) {
         role = "slave";
         i++;
-        String temp[] = args[i].split(" ");
-        masterPort = Integer.parseInt(temp[1].substring(0 , temp[1].length()-1));
-        hostName = temp[0].substring(1);
+        // String temp[] = args[i].split(" ");
+        // masterPort = Integer.parseInt(temp[1].substring(0 , temp[1].length()));
+        // hostName = temp[0].substring(1);
+        masterPort = Integer.parseInt(args[i].split(" ")[1]);
+        hostName = args[i].split(" ")[0];
 
         System.out.println("Master Port: "+ masterPort);
         System.out.println("Hostname: "+ hostName);
