@@ -21,8 +21,11 @@ public class Main{
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     System.out.println("Logs from your program will appear here!");
-
+    int port = 6379;
     for(int i = 0 ; i < args.length ; i++){
+      if(args[i].equals("--port")) {
+        port = Integer.parseInt(args[i]);
+      }
       if(args[i].equals("--dir")){
         directoryPath = args[i+1];
       }
@@ -32,7 +35,7 @@ public class Main{
     }
        ServerSocket serverSocket = null;
       //  Socket clientSocket = null;
-       int port = 6379;
+       
        try {
 
          serverSocket = new ServerSocket(port);
@@ -218,6 +221,7 @@ public class Main{
 
   public static String handleKeyWithExpiry(String key, long keyExpiryTime , String value) {
     System.out.println("key expiry Time: " + keyExpiryTime);
+
     long currentTime = System.currentTimeMillis();
     if(currentTime > keyExpiryTime) {
       map.remove(key);
