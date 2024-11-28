@@ -136,7 +136,7 @@ public class Main{
       //   System.out.println("Error in finaling outoutstream "+ e.getMessage());
       // }
       try{
-        final OutputStream replicaOutputStream = clientSocket.getOutputStream();
+        // final OutputStream replicaOutputStream = clientSocket.getOutputStream();
         Parser parser = new Parser(clientSocket.getInputStream());
         while (true) {
   
@@ -220,7 +220,7 @@ public class Main{
           clientSocket.getOutputStream().write(response.getBytes());
 
           // if(replicaConnection != null)
-          replicaOutputStream.write(makeRESPArray(queue.remove()).getBytes());
+          // replicaOutputStream.write(makeRESPArray(queue.remove()).getBytes());
           // while(!queue.isEmpty()) {
           //   clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());   
           // }
