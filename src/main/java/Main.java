@@ -11,7 +11,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.io.File;
 import java.io.FileReader;
-import java.util.HexFormat;
 
 public class Main{
   
@@ -29,6 +28,7 @@ public class Main{
   static int port = 6379;
   static Socket slaveSocket;
   static OutputStream slaveOutput;
+  Queue<String[]> queue = new LinkedList<>();
 
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -63,7 +63,6 @@ public class Main{
           slaveSocket = new Socket(hostName , masterPort);
           slaveOutput = slaveSocket.getOutputStream();
           String pingMaster = "*1\r\n$4\r\nPING\r\n";
-          slaveSocket.getOutputStream().write(pingMaster.getBytes());
           slaveSocket.getInputStream().read();
           slaveSocket.getOutputStream().flush();
 
@@ -127,7 +126,7 @@ public class Main{
   }
   static void handleClient(Socket clientSocket) {
     try{
-
+     
       Parser parser = new Parser(clientSocket.getInputStream());
      
       while (true) {
@@ -137,7 +136,6 @@ public class Main{
         System.out.println("Received " + Arrays.toString(tokens));
         System.out.println(directoryPath +" "+ dbFileName);
         String response = "";
-        
         switch (tokens[0].toLowerCase()) {
           case "echo":
             response = makeBulkString(tokens[1] , false);
@@ -149,9 +147,14 @@ public class Main{
               map.put(tokens[1] , new ValueAndExpiry(tokens[2], Long.MAX_VALUE));
             }
 
+            // queue.add(tokens);
             response = "+OK\r\n";
+
+            System.out.println("Sending salve :");
             if(slaveName != null){
-              slaveSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
+              // slaveSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
+              System.out.println(Arrays.toString(tokens));
+              clientSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
               // slaveSocket.getInputStream().read(makeRESPArray(tokens).getBytes());
               // clientSocket.slaveO.write(makeRESPArray(tokens).getBytes());
             }
