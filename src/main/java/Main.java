@@ -129,6 +129,7 @@ public class Main{
          
     }
     static void handleClient(Socket clientSocket) {
+      BlockingQueue<String[]> blockingQueue = new LinkedBlockingDeque<>();
       // Socket replicaConnection = clientSocket;
       // try{
         
@@ -155,7 +156,10 @@ public class Main{
               else{
                 map.put(tokens[1] , new ValueAndExpiry(tokens[2], Long.MAX_VALUE));
               }
-  
+
+              
+              blockingQueue.add(tokens);
+              System.out.println("Added to blocked queue :" + blockingQueue.peek().toString());
               response = "+OK\r\n";
 
               queue.add(tokens);
@@ -191,7 +195,7 @@ public class Main{
   
             case "psync":
                   
-                  try{
+                  // try{
                     byte[] bytes = HexFormat.of().parseHex("524544495330303131fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fa056374696d65c26d08bc65fa08757365642d6d656dc2b0c41000fa08616f662d62617365c000fff06e3bfec0ff5aa2");
                     
                     response = makeBulkString("+FULLRESYNC "+master_replicationID+" "+master_replicationOffset+"\r\n", false);
@@ -201,11 +205,21 @@ public class Main{
                     clientSocket.getOutputStream().write(bytes);
                     response = null;
 
-                    System.out.println("storing replica connection");
-                    // replicaConnection = clientSoc ket;
-                  }catch(Exception e){
-                    System.out.println("Error in psync "+ e.getMessage());
-                  }
+                    try{
+                      System.out.println("Started Blocking queue");
+                      while(true){
+                        String[] element = blockingQueue.take();
+                        System.out.println("Element retrieved from queue: "+ element.toString());
+                        clientSocket.getOutputStream().write(makeRESPArray(element).getBytes());
+                      }
+                    }catch(Exception e){
+                      System.out.println("Error in blocking queue: "+ e.getMessage());
+                    }
+
+                    // System.out.println("storing replica connection");
+                  // }catch(Exception e){
+                  //   System.out.println("Error in psync "+ e.getMessage());
+                  // }
                   // System.out.println(replicaConnection.);
 
                 
