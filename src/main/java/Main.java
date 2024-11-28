@@ -28,6 +28,7 @@ public class Main{
   static String slaveName = null;
   static int port = 6379;
   static Socket slaveSocket;
+  static OutputStream slaveOutput;
 
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -52,6 +53,7 @@ public class Main{
         // hostName = temp[0].substring(1);
         masterPort = Integer.parseInt(args[i].split(" ")[1]);
         hostName = args[i].split(" ")[0];
+         
 
         System.out.println("Master Port: "+ masterPort);
         System.out.println("Hostname: "+ hostName);
@@ -59,6 +61,7 @@ public class Main{
 
         try{
           slaveSocket = new Socket(hostName , masterPort);
+          slaveOutput = slaveSocket.getOutputStream();
           String pingMaster = "*1\r\n$4\r\nPING\r\n";
           slaveSocket.getOutputStream().write(pingMaster.getBytes());
           slaveSocket.getInputStream().read();
@@ -148,7 +151,8 @@ public class Main{
 
             response = "+OK\r\n";
             if(slaveName != null){
-              slaveSocket.getOutputStream().write(response.getBytes());
+              // slaveSocket.getInputStream().read(makeRESPArray(tokens).getBytes());
+              slaveOutput.write(makeRESPArray(tokens).getBytes());
             }
             //   // clientSocket = new Socket(slaveName, slavePort);
             //   // clientSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
