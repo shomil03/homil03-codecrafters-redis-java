@@ -150,26 +150,13 @@ public class Main{
             // queue.add(tokens);
             response = "+OK\r\n";
 
-            System.out.println("Sending salve :");
+            System.out.println("Sending salve :"+slaveName);
             if(slaveName != null){
-              // slaveSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
               System.out.println(Arrays.toString(tokens));
               clientSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
-              // slaveSocket.getInputStream().read(makeRESPArray(tokens).getBytes());
-              // clientSocket.slaveO.write(makeRESPArray(tokens).getBytes());
+             
             }
-            //   // clientSocket = new Socket(slaveName, slavePort);
-            //   // clientSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
-            //   try{
-            //     Socket slaveSocket = new Socket(slaveName, slavePort);
-            //     slaveSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
-            //   }catch(Exception e){
-            //     System.out.println("Error in sending message to slave : "+ e.getMessage());
-            //   }
-            //   // clientSocket = new Socket(port);
-            // }
-            // clientSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
-            // sendSlave(makeRESPArray(tokens));
+       
 
             break;
           case "get":
