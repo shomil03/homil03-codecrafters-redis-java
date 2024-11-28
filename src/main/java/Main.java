@@ -158,7 +158,7 @@ public class Main{
   
               System.out.println("Sending salve :"+slaveName);
               queue.add(tokens);
-              if(slaveName != null){
+              if(slaveName != null && role.equals("master")){
                 System.out.println(Arrays.toString(tokens));
                 // clientSocket.getOutputStream().write(makeBulkString(tokens[0], false).getBytes());
                 slaveSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
@@ -201,6 +201,7 @@ public class Main{
                   slaveName = tokens[1];
                   System.out.println("Setting slave port:"+tokens[2]);
                   slavePort = Integer.parseInt(tokens[2]);
+                  slaveSocket = new Socket(slaveName , slavePort);
                 }
                 response = "+OK\r\n";
                 break;  
