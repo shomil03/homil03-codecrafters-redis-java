@@ -151,8 +151,9 @@ public class Main{
 
             response = "+OK\r\n";
             if(slaveName != null){
+              slaveSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
               // slaveSocket.getInputStream().read(makeRESPArray(tokens).getBytes());
-              slaveOutput.write(makeRESPArray(tokens).getBytes());
+              // clientSocket.slaveO.write(makeRESPArray(tokens).getBytes());
             }
             //   // clientSocket = new Socket(slaveName, slavePort);
             //   // clientSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
