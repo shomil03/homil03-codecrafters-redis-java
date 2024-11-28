@@ -8,7 +8,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.io.File;
 import java.io.FileReader;
 
@@ -132,6 +134,7 @@ public class Main{
          
     }
     static void handleClient(Socket clientSocket) {
+      BlockingQueue<String> blockingQueue = new LinkedBlockingDeque<>();
       try{
        
         Parser parser = new Parser(clientSocket.getInputStream());
@@ -156,13 +159,15 @@ public class Main{
               // queue.add(tokens);
               response = "+OK\r\n";
 
-              try{
-                System.out.println("Starting forwarding");
-                Socket slave = new Socket(slaveName , slavePort);
-                slave.getOutputStream().write(makeRESPArray(tokens).getBytes());
-              }catch(Exception e){
-                System.out.println("Error in forwading: " + e.getMessage());
-              }
+              blockingQueue.add(makeRESPArray(tokens));
+
+              // try{
+              //   System.out.println("Starting forwarding");
+              //   Socket slave = new Socket(slaveName , slavePort);
+              //   slave.getOutputStream().write(makeRESPArray(tokens).getBytes());
+              // }catch(Exception e){
+              //   System.out.println("Error in forwading: " + e.getMessage());
+              // }
   
               // System.out.println("Sending salve :"+slaveName);
               // queue.add(tokens);
@@ -204,13 +209,6 @@ public class Main{
                break;
   
             case "replconf":
-                if(tokens[1].equals("listening-port")){
-                  System.out.println("Setting slave name : "+tokens[1]);
-                  // slaveName = tokens[1];
-                  System.out.println("Setting slave port:"+tokens[2]);
-                  slavePort = Integer.parseInt(tokens[2]);
-                  // slaveSocket = new Socket(slaveName , slavePort);
-                }
                 response = "+OK\r\n";
                 break;  
   
@@ -225,6 +223,17 @@ public class Main{
                   clientSocket.getOutputStream().write(response.getBytes());
                   clientSocket.getOutputStream().write(bytes);
                   response = null;
+
+                  try{
+                    while (true) {
+                      String element = blockingQueue.take();
+                      clientSocket.getOutputStream().write(element.getBytes());
+                    }
+                  }catch(InterruptedException ie){
+                  //     // System.out.println("blocking queue: "+ ie.getMessage());
+                  //     throw InterruptedException;
+                    }
+                  // }
                   break;
   
             default:
