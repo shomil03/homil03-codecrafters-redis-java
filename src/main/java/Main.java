@@ -28,201 +28,207 @@ public class Main{
   static int port = 6379;
   static Socket slaveSocket;
   static OutputStream slaveOutput;
-  Queue<String[]> queue = new LinkedList<>();
-
-  public static void main(String[] args){
-    // You can use print statements as follows for debugging, they'll be visible when running tests.
-    System.out.println("Logs from your program will appear here!");
-    
-    // int port = 6379;
-    for(int i = 0 ; i < args.length ; i++){
-
-      if(args[i].equals("REPLCONF")) {
-        i++;
-        System.out.println("Setting slave name : "+args[i]);
-        slaveName = args[i];
-        i++;
-        System.out.println("Setting slave port:"+args[i]);
-        slavePort = Integer.parseInt(args[i]);
-        continue;
-
+  static Queue<String[]> queue = new LinkedList<>();
+  
+    public static void main(String[] args){
+      // You can use print statements as follows for debugging, they'll be visible when running tests.
+      System.out.println("Logs from your program will appear here!");
+      
+      // int port = 6379;
+      for(int i = 0 ; i < args.length ; i++){
+  
+        if(args[i].equals("REPLCONF")) {
+          i++;
+          System.out.println("Setting slave name : "+args[i]);
+          slaveName = args[i];
+          i++;
+          System.out.println("Setting slave port:"+args[i]);
+          slavePort = Integer.parseInt(args[i]);
+          continue;
+  
+        }
+        if(args[i].equals("--replicaof")) {
+          role = "slave";
+          i++;
+          // String temp[] = args[i].split(" ");
+          // masterPort = Integer.parseInt(temp[1].substring(0 , temp[1].length()));
+          // hostName = temp[0].substring(1);
+          masterPort = Integer.parseInt(args[i].split(" ")[1]);
+          hostName = args[i].split(" ")[0];
+           
+  
+          System.out.println("Master Port: "+ masterPort);
+          System.out.println("Hostname: "+ hostName);
+  
+  
+          try{
+            slaveSocket = new Socket(hostName , masterPort);
+            slaveOutput = slaveSocket.getOutputStream();
+            String pingMaster = "*1\r\n\r\nPING\r\n";
+            slaveSocket.getInputStream().read();
+            slaveSocket.getOutputStream().flush();
+  
+            String sendRRPLCONF = makeRESPArray(new String[]{"REPLCONF" , "listening-port", ""+port});
+            slaveSocket.getOutputStream().write(sendRRPLCONF.getBytes());
+            slaveSocket.getInputStream().read();
+            slaveSocket.getOutputStream().flush();
+  
+            String sendCAPA = makeRESPArray(new String[]{"REPLCONF" ,"capa" , "psync2" });
+            slaveSocket.getOutputStream().write(sendCAPA.getBytes());
+            slaveSocket.getInputStream().read();
+            slaveSocket.getOutputStream().flush();
+  
+            String sendPSYNC = makeRESPArray(new String[]{"PSYNC" ,"?", "-1"});
+            slaveSocket.getOutputStream().write(sendPSYNC.getBytes());
+            // slaveSocket.getInputStream().read();
+            // slaveSocket.getOutputStream().flush();
+  
+          }catch(Exception e) {
+            System.out.println("error in connection to master port: "+ e.getMessage());
+          }
+  
+        }
+        if(args[i].equals("--port")) {
+          port = Integer.parseInt(args[i+1]);
+        }
+        if(args[i].equals("--dir")){
+          directoryPath = args[i+1];
+        }
+        if(args[i].equals("--dbfilename")){
+          dbFileName = args[i+1];
+        }
       }
-      if(args[i].equals("--replicaof")) {
-        role = "slave";
-        i++;
-        // String temp[] = args[i].split(" ");
-        // masterPort = Integer.parseInt(temp[1].substring(0 , temp[1].length()));
-        // hostName = temp[0].substring(1);
-        masterPort = Integer.parseInt(args[i].split(" ")[1]);
-        hostName = args[i].split(" ")[0];
+         ServerSocket serverSocket = null;
+        //  Socket clientSocket = null;
          
-
-        System.out.println("Master Port: "+ masterPort);
-        System.out.println("Hostname: "+ hostName);
-
-
-        try{
-          slaveSocket = new Socket(hostName , masterPort);
-          slaveOutput = slaveSocket.getOutputStream();
-          String pingMaster = "*1\r\n$4\r\nPING\r\n";
-          slaveSocket.getInputStream().read();
-          slaveSocket.getOutputStream().flush();
-
-          String sendRRPLCONF = makeRESPArray(new String[]{"REPLCONF" , "listening-port", ""+port});
-          slaveSocket.getOutputStream().write(sendRRPLCONF.getBytes());
-          slaveSocket.getInputStream().read();
-          slaveSocket.getOutputStream().flush();
-
-          String sendCAPA = makeRESPArray(new String[]{"REPLCONF" ,"capa" , "psync2" });
-          slaveSocket.getOutputStream().write(sendCAPA.getBytes());
-          slaveSocket.getInputStream().read();
-          slaveSocket.getOutputStream().flush();
-
-          String sendPSYNC = makeRESPArray(new String[]{"PSYNC" ,"?", "-1"});
-          slaveSocket.getOutputStream().write(sendPSYNC.getBytes());
-          // slaveSocket.getInputStream().read();
-          // slaveSocket.getOutputStream().flush();
-
-        }catch(Exception e) {
-          System.out.println("error in connection to master port: "+ e.getMessage());
-        }
-
-      }
-      if(args[i].equals("--port")) {
-        port = Integer.parseInt(args[i+1]);
-      }
-      if(args[i].equals("--dir")){
-        directoryPath = args[i+1];
-      }
-      if(args[i].equals("--dbfilename")){
-        dbFileName = args[i+1];
-      }
-    }
-       ServerSocket serverSocket = null;
-      //  Socket clientSocket = null;
-       
-       try {
-
-         serverSocket = new ServerSocket(port);
-         // Since the tester restarts your program quite often, setting SO_REUSEADDR
-         // ensures that we don't run into 'Address already in use' errors
-         serverSocket.setReuseAddress(true);
-         // Wait for connection from client.
-
-         while(true) {
-          final Socket clientSocket = serverSocket.accept();
-          new Thread(() -> handleClient(clientSocket)).start();
+         try {
+  
+           serverSocket = new ServerSocket(port);
+           // Since the tester restarts your program quite often, setting SO_REUSEADDR
+           // ensures that we don't run into 'Address already in use' errors
+           serverSocket.setReuseAddress(true);
+           // Wait for connection from client.
+  
+           while(true) {
+            final Socket clientSocket = serverSocket.accept();
+            new Thread(() -> handleClient(clientSocket)).start();
+           
+           }
+         } catch (IOException e) {
+           System.out.println("IOException: " + e.getMessage());
+        //  } finally {
+        //    try {
+        //      if (clientSocket != null) {
+        //        clientSocket.close();
+        //      }
+        //    } catch (IOException e) {
+        //      System.out.println("IOException: " + e.getMessage());
+        //    }
          }
-       } catch (IOException e) {
-         System.out.println("IOException: " + e.getMessage());
-      //  } finally {
-      //    try {
-      //      if (clientSocket != null) {
-      //        clientSocket.close();
-      //      }
-      //    } catch (IOException e) {
-      //      System.out.println("IOException: " + e.getMessage());
-      //    }
-       }
-       
-  }
-  static void handleClient(Socket clientSocket) {
-    try{
-     
-      Parser parser = new Parser(clientSocket.getInputStream());
-     
-      while (true) {
-
-        String tokens[] = parser.parseNext();
-
-        System.out.println("Received " + Arrays.toString(tokens));
-        System.out.println(directoryPath +" "+ dbFileName);
-        String response = "";
-        switch (tokens[0].toLowerCase()) {
-          case "echo":
-            response = makeBulkString(tokens[1] , false);
-            break;
-          case "set":
-            if(tokens.length > 3)
-            map.put(tokens[1] , new ValueAndExpiry(tokens[2], System.currentTimeMillis()+Integer.parseInt(tokens[4])));
-            else{
-              map.put(tokens[1] , new ValueAndExpiry(tokens[2], Long.MAX_VALUE));
-            }
-
-            // queue.add(tokens);
-            response = "+OK\r\n";
-
-            System.out.println("Sending salve :"+slaveName);
-            if(slaveName != null){
-              System.out.println(Arrays.toString(tokens));
-              clientSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
-             
-            }
-       
-
-            break;
-          case "get":
-            response = handleGet(tokens[1]);
-            break;
-
-          case "ping":
-            response = makeBulkString("PONG", false);
-            break;
-          
-          case "config":
-            response = handleGet(tokens[2]);
-            break;
-          
-          case "keys":
-            RDBParser filParser = new RDBParser();
-            String keys[] = filParser.readRDBFile(directoryPath +"/" + dbFileName);
-            response = makeRESPArray(keys);
-            break;
-
-          case "info":
-              // if(role.equals("slave"))
-              response = makeBulkString("role:"+role+"master_replid:"+master_replicationID+"master_repl_offset:"+master_replicationOffset, false);
-              // response += makeBulkString("master_replid:"+master_replicationID+"master_repl_offset:"+master_replicationOffset, false);
-            // response += makeBulkString("master_repl_offset:"+master_replicationOffset, false);
-             break;
-
-          case "replconf":
-              if(tokens[1].equals("listening-port")){
-                System.out.println("Setting slave name : "+tokens[1]);
-                slaveName = tokens[1];
-                System.out.println("Setting slave port:"+tokens[2]);
-                slavePort = Integer.parseInt(tokens[2]);
-              }
-              response = "+OK\r\n";
-              break;  
-
-          case "psync":
-                
-                
-                byte[] bytes = HexFormat.of().parseHex("524544495330303131fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fa056374696d65c26d08bc65fa08757365642d6d656dc2b0c41000fa08616f662d62617365c000fff06e3bfec0ff5aa2");
-                
-                response = makeBulkString("+FULLRESYNC "+master_replicationID+" "+master_replicationOffset+"\r\n", false);
-                clientSocket.getOutputStream().write(response.getBytes());
-                response = "$"+bytes.length+"\r\n";
-                clientSocket.getOutputStream().write(response.getBytes());
-                clientSocket.getOutputStream().write(bytes);
-                response = null;
-                break;
-
-          default:
-            break;
-        }
-
-        if(response != null)
-        clientSocket.getOutputStream().write(response.getBytes());
-        
-        
-      }
-    }catch(Exception e){
-      System.out.println("Client handler exception: " + e.getMessage());
+         
     }
-    finally{
+    static void handleClient(Socket clientSocket) {
+      try{
+       
+        Parser parser = new Parser(clientSocket.getInputStream());
+        while (true) {
+  
+          String tokens[] = parser.parseNext();
+  
+          System.out.println("Received " + Arrays.toString(tokens));
+          System.out.println(directoryPath +" "+ dbFileName);
+          String response = "";
+          switch (tokens[0].toLowerCase()) {
+            case "echo":
+              response = makeBulkString(tokens[1] , false);
+              break;
+            case "set":
+              if(tokens.length > 3)
+              map.put(tokens[1] , new ValueAndExpiry(tokens[2], System.currentTimeMillis()+Integer.parseInt(tokens[4])));
+              else{
+                map.put(tokens[1] , new ValueAndExpiry(tokens[2], Long.MAX_VALUE));
+              }
+  
+              // queue.add(tokens);
+              response = "+OK\r\n";
+  
+              System.out.println("Sending salve :"+slaveName);
+              queue.add(tokens);
+              // if(slaveName != null){
+              //   System.out.println(Arrays.toString(tokens));
+              //   clientSocket.getOutputStream().write(makeBulkString(tokens, false));
+               
+              // }
+         
+  
+              break;
+            case "get":
+              response = handleGet(tokens[1]);
+              break;
+  
+            case "ping":
+              response = makeBulkString("PONG", false);
+              break;
+            
+            case "config":
+              response = handleGet(tokens[2]);
+              break;
+            
+            case "keys":
+              RDBParser filParser = new RDBParser();
+              String keys[] = filParser.readRDBFile(directoryPath +"/" + dbFileName);
+              response = makeRESPArray(keys);
+              break;
+  
+            case "info":
+                // if(role.equals("slave"))
+                response = makeBulkString("role:"+role+"master_replid:"+master_replicationID+"master_repl_offset:"+master_replicationOffset, false);
+                // response += makeBulkString("master_replid:"+master_replicationID+"master_repl_offset:"+master_replicationOffset, false);
+              // response += makeBulkString("master_repl_offset:"+master_replicationOffset, false);
+               break;
+  
+            case "replconf":
+                if(tokens[1].equals("listening-port")){
+                  System.out.println("Setting slave name : "+tokens[1]);
+                  slaveName = tokens[1];
+                  System.out.println("Setting slave port:"+tokens[2]);
+                  slavePort = Integer.parseInt(tokens[2]);
+                }
+                response = "+OK\r\n";
+                break;  
+  
+            case "psync":
+                  
+                  
+                  byte[] bytes = HexFormat.of().parseHex("524544495330303131fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fa056374696d65c26d08bc65fa08757365642d6d656dc2b0c41000fa08616f662d62617365c000fff06e3bfec0ff5aa2");
+                  
+                  response = makeBulkString("+FULLRESYNC "+master_replicationID+" "+master_replicationOffset+"\r\n", false);
+                  clientSocket.getOutputStream().write(response.getBytes());
+                  response = "$"+bytes.length+"\r\n";
+                  clientSocket.getOutputStream().write(response.getBytes());
+                  clientSocket.getOutputStream().write(bytes);
+                  response = null;
+                  break;
+  
+            default:
+              break;
+          }
+  
+          if(response != null)
+          clientSocket.getOutputStream().write(response.getBytes());
+          
+          
+        }
+      }catch(Exception e){
+        System.out.println("Client handler exception: " + e.getMessage());
+      }
+      finally{
+        
       try {
+        while(!queue.isEmpty()) {
+          clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());
+        // queue.remove();
+        }
         clientSocket.close();
         System.out.println("Client disconnected");
     } catch (IOException e) {
@@ -231,15 +237,7 @@ public class Main{
     }
   }
 
-  // public static void sendSlave(String message){
-  //   try{
-  //     Socket slaveSockter = new Socket(slaveName, slavePort);
-  //     slaveSockter.getOutputStream().write(message.getBytes());
-  //   }catch(Exception e){
-  //     System.out.println("Error in creating slave socket while sending message to slave "+ e.getMessage());
-  //   }
-
-  // }
+ 
 
   public static void readFile() {
     try{
@@ -305,17 +303,12 @@ public class Main{
     if(!map.containsKey(key)) {
       // check key in file
       RDBParser fileReader = new RDBParser();
-      // String value = fileReader.readRDBFile( directoryPath + "/"+ dbFileName);
       fileReader.readRDBFile( directoryPath + "/"+ dbFileName);
       // System.out.println("Map in fileReader: "+ fileReader.map);
       if(fileReader.map.containsKey(key)){
         System.out.println("Key found in file: ");
-        // if(fileReader.expiryKey.containsKey(key)) {
           return handleKeyWithExpiry(key, fileReader.map.get(key).expiry , fileReader.map.get(key).value);
-        // }
-        // return makeBulkString(fileReader.map.get(key),false);
       }
-      // response = makeRESPArray(new String[]{value});
 
       return makeBulkString("-1" , true);
     }
@@ -323,14 +316,7 @@ public class Main{
     // handle key-value with expiry
 
     return handleKeyWithExpiry(key, map.get(key).expiry , map.get(key).value);
-    // long currentTime = System.currentTimeMillis();
-    // long keyExpiryTime = map.get(key).expiry;
-
-    // if(currentTime > keyExpiryTime) {
-    //   map.remove(key);
-    //   return makeBulkString("-1" , true);
-    // }
-    // return makeBulkString(map.get(key).value , false);
+    
   }
 
   public static String handleKeyWithExpiry(String key, long keyExpiryTime , String value) {
