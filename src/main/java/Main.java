@@ -129,10 +129,14 @@ public class Main{
          
     }
     static void handleClient(Socket clientSocket) {
-      BlockingQueue<String> blockingQueue = new LinkedBlockingDeque<>();
-      final Socket replicaConnection = clientSocket;
+      // Socket replicaConnection = clientSocket;
+      // try{
+        
+      // }catch(Exception e){
+      //   System.out.println("Error in finaling outoutstream "+ e.getMessage());
+      // }
       try{
-       
+        final OutputStream replicaOutputStream = clientSocket.getOutputStream();
         Parser parser = new Parser(clientSocket.getInputStream());
         while (true) {
   
@@ -154,10 +158,7 @@ public class Main{
   
               response = "+OK\r\n";
 
-              System.out.println("Adding in blocking queue");
-              // blockingQueue.add(makeRESPArray(tokens));
               queue.add(tokens);
-              System.out.println("added: "+ blockingQueue.peek());
 
              
   
@@ -218,8 +219,8 @@ public class Main{
           if(response != null)
           clientSocket.getOutputStream().write(response.getBytes());
 
-          if(replicaConnection != null)
-          replicaConnection.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());
+          // if(replicaConnection != null)
+          replicaOutputStream.write(makeRESPArray(queue.remove()).getBytes());
           // while(!queue.isEmpty()) {
           //   clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());   
           // }
