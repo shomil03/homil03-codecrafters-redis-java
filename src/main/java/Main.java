@@ -28,7 +28,7 @@ public class Main{
   static String hostName = "";
   static String slaveName = "localhost";
   static int port = 6379;
-  static Socket slaveSocket;
+  // static Socket slaveSocket;
   static OutputStream slaveOutput;
   static Queue<String[]> queue = new LinkedList<>();
   
@@ -39,16 +39,16 @@ public class Main{
       // int port = 6379;
       for(int i = 0 ; i < args.length ; i++){
   
-        if(args[i].equals("REPLCONF")) {
-          i++;
-          System.out.println("Setting slave name : "+args[i]);
-          slaveName = args[i];
-          i++;
-          System.out.println("Setting slave port:"+args[i]);
-          slavePort = Integer.parseInt(args[i]);
-          continue;
+        // if(args[i].equals("REPLCONF")) {
+        //   i++;
+        //   System.out.println("Setting slave name : "+args[i]);
+        //   slaveName = args[i];
+        //   i++;
+        //   System.out.println("Setting slave port:"+args[i]);
+        //   slavePort = Integer.parseInt(args[i]);
+        //   continue;
   
-        }
+        // }
         if(args[i].equals("--replicaof")) {
           role = "slave";
           i++;
@@ -64,7 +64,7 @@ public class Main{
   
   
           try{
-            slaveSocket = new Socket(hostName , masterPort);
+            Socket slaveSocket = new Socket(hostName , masterPort);
             slaveOutput = slaveSocket.getOutputStream();
             String pingMaster = "*1\r\n\r\nPING\r\n";
             slaveSocket.getInputStream().read();
@@ -156,31 +156,11 @@ public class Main{
                 map.put(tokens[1] , new ValueAndExpiry(tokens[2], Long.MAX_VALUE));
               }
   
-              // queue.add(tokens);
               response = "+OK\r\n";
 
               blockingQueue.add(makeRESPArray(tokens));
 
-              // try{
-              //   System.out.println("Starting forwarding");
-              //   Socket slave = new Socket(slaveName , slavePort);
-              //   slave.getOutputStream().write(makeRESPArray(tokens).getBytes());
-              // }catch(Exception e){
-              //   System.out.println("Error in forwading: " + e.getMessage());
-              // }
-  
-              // System.out.println("Sending salve :"+slaveName);
-              // queue.add(tokens);
-              // if(slaveName != null && role.equals("master")){
-              //   System.out.println(Arrays.toString(tokens));
-              //   // clientSocket.getOutputStream().write(makeBulkString(tokens[0], false).getBytes());
-              //   slaveSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
-                // queue.add(tokens);
-                // clientSocket.getOutputStream().write( "+OK\r\n".getBytes());
-                // response = makeRESPArray(tokens);
-               
-              // }
-         
+             
   
               break;
             case "get":
@@ -230,8 +210,8 @@ public class Main{
                       clientSocket.getOutputStream().write(element.getBytes());
                     }
                   }catch(InterruptedException ie){
-                  //     // System.out.println("blocking queue: "+ ie.getMessage());
-                  //     throw InterruptedException;
+                      System.out.println("blocking queue: "+ ie.getMessage());
+                      // throw new RuntimeException(ie);
                     }
                   // }
                   break;
