@@ -156,17 +156,17 @@ public class Main{
               // queue.add(tokens);
               response = "+OK\r\n";
   
-              System.out.println("Sending salve :"+slaveName);
+              // System.out.println("Sending salve :"+slaveName);
               queue.add(tokens);
-              if(slaveName != null && role.equals("master")){
-                System.out.println(Arrays.toString(tokens));
-                // clientSocket.getOutputStream().write(makeBulkString(tokens[0], false).getBytes());
-                slaveSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
+              // if(slaveName != null && role.equals("master")){
+              //   System.out.println(Arrays.toString(tokens));
+              //   // clientSocket.getOutputStream().write(makeBulkString(tokens[0], false).getBytes());
+              //   slaveSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
                 // queue.add(tokens);
                 // clientSocket.getOutputStream().write( "+OK\r\n".getBytes());
                 // response = makeRESPArray(tokens);
                
-              }
+              // }
          
   
               break;
@@ -201,7 +201,7 @@ public class Main{
                   slaveName = tokens[1];
                   System.out.println("Setting slave port:"+tokens[2]);
                   slavePort = Integer.parseInt(tokens[2]);
-                  slaveSocket = new Socket(slaveName , slavePort);
+                  // slaveSocket = new Socket(slaveName , slavePort);
                 }
                 response = "+OK\r\n";
                 break;  
@@ -226,6 +226,10 @@ public class Main{
   
           if(response != null)
           clientSocket.getOutputStream().write(response.getBytes());
+
+          while(!queue.isEmpty()) {
+            clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());   
+          }
           
           
         }
