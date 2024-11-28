@@ -24,7 +24,7 @@ public class Main{
   static String master_replicationOffset = "0";
   static String masterIP = "";
   static String hostName = "";
-  static String slaveName = null;
+  static String slaveName = "localhost";
   static int port = 6379;
   static Socket slaveSocket;
   static OutputStream slaveOutput;
@@ -206,7 +206,7 @@ public class Main{
             case "replconf":
                 if(tokens[1].equals("listening-port")){
                   System.out.println("Setting slave name : "+tokens[1]);
-                  slaveName = tokens[1];
+                  // slaveName = tokens[1];
                   System.out.println("Setting slave port:"+tokens[2]);
                   slavePort = Integer.parseInt(tokens[2]);
                   // slaveSocket = new Socket(slaveName , slavePort);
