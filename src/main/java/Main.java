@@ -39,8 +39,10 @@ public class Main{
 
       if(args[i].equals("REPLCONF")) {
         i++;
+        System.out.println("Setting slave name : "+args[i]);
         slaveName = args[i];
         i++;
+        System.out.println("Setting slave port:"+args[i]);
         slavePort = Integer.parseInt(args[i]);
         continue;
 
