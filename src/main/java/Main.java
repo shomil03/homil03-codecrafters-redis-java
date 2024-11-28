@@ -135,6 +135,7 @@ public class Main{
     }
     static void handleClient(Socket clientSocket) {
       BlockingQueue<String> blockingQueue = new LinkedBlockingDeque<>();
+      Socket replicaConnection = null;
       try{
        
         Parser parser = new Parser(clientSocket.getInputStream());
@@ -159,7 +160,8 @@ public class Main{
               response = "+OK\r\n";
 
               System.out.println("Adding in blocking queue");
-              blockingQueue.add(makeRESPArray(tokens));
+              // blockingQueue.add(makeRESPArray(tokens));
+              queue.add(tokens);
               System.out.println("added: "+ blockingQueue.peek());
 
              
@@ -203,16 +205,18 @@ public class Main{
                   clientSocket.getOutputStream().write(bytes);
                   response = null;
 
-                  try{
-                    while (true) {
-                      String element = blockingQueue.take();
-                      System.out.println("Element: "+element);
-                      clientSocket.getOutputStream().write(element.getBytes());
-                    }
-                  }catch(InterruptedException ie){
-                      System.out.println("blocking queue: "+ ie.getMessage());
-                      // throw new RuntimeException(ie);
-                    }
+                  replicaConnection = clientSocket;
+
+                  // try{
+                  //   while (true) {
+                  //     String element = blockingQueue.take();
+                  //     System.out.println("Element: "+element);
+                  //     clientSocket.getOutputStream().write(element.getBytes());
+                  //   }
+                  // }catch(InterruptedException ie){
+                  //     System.out.println("blocking queue: "+ ie.getMessage());
+                  //     // throw new RuntimeException(ie);
+                  //   }
                   // }
                   break;
   
@@ -224,6 +228,8 @@ public class Main{
           if(response != null)
           clientSocket.getOutputStream().write(response.getBytes());
 
+          if(replicaConnection != null)
+          replicaConnection.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());
           // while(!queue.isEmpty()) {
           //   clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());   
           // }
