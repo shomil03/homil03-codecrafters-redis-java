@@ -167,12 +167,12 @@ public class Main{
               }
 
               
-              blockingQueue.add(tokens);
-              System.out.println("Added to blocked queue :" + blockingQueue.peek().toString());
+              // blockingQueue.add(tokens);
+              // System.out.println("Added to blocked queue :" + blockingQueue.peek().toString());
               response = "+OK\r\n";
 
               queue.add(tokens);
-
+              System.out.println("Replica outputstream size :" + Main.replicaOutputStreams.size());
               if(Main.replicaOutputStreams.size() > 0) {
                 Main.replicaOutputStreams.get(0).write(makeRESPArray(tokens).getBytes());
               }
@@ -216,16 +216,16 @@ public class Main{
                     clientSocket.getOutputStream().write(bytes);
                     response = null;
 
-                    try{
-                      System.out.println("Started Blocking queue");
-                      while(true){
-                        String[] element = blockingQueue.take();
-                        System.out.println("Element retrieved from queue: "+ element.toString());
-                        clientSocket.getOutputStream().write(makeRESPArray(element).getBytes());
-                      }
-                    }catch(Exception e){
-                      System.out.println("Error in blocking queue: "+ e.getMessage());
-                    }
+                    // try{
+                    //   System.out.println("Started Blocking queue");
+                    //   while(true){
+                    //     String[] element = blockingQueue.take();
+                    //     System.out.println("Element retrieved from queue: "+ element.toString());
+                    //     clientSocket.getOutputStream().write(makeRESPArray(element).getBytes());
+                    //   }
+                    // }catch(Exception e){
+                    //   System.out.println("Error in blocking queue: "+ e.getMessage());
+                    // }
 
                     RespondTask task = new RespondTask(clientSocket.getOutputStream());
 
