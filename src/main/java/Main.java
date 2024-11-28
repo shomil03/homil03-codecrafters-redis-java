@@ -20,10 +20,12 @@ public class Main{
   static String dbFileName = null;
   static String role = "master";
   static int masterPort = 6379;
+  static int slavePort = -1;
   static String master_replicationID = "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb";
   static String master_replicationOffset = "0";
   static String masterIP = "";
   static String hostName = "";
+  static String slaveName = null;
 
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -31,6 +33,15 @@ public class Main{
     
     int port = 6379;
     for(int i = 0 ; i < args.length ; i++){
+
+      if(args[i].equals("REPLCONF")) {
+        i++;
+        slaveName = args[i];
+        i++;
+        slavePort = Integer.parseInt(args[i]);
+        continue;
+
+      }
       if(args[i].equals("--replicaof")) {
         role = "slave";
         i++;
@@ -132,7 +143,10 @@ public class Main{
             else{
               map.put(tokens[1] , new ValueAndExpiry(tokens[2], Long.MAX_VALUE));
             }
+
             response = "+OK\r\n";
+            if(slaveName != null)
+            sendSlave(makeRESPArray(tokens));
             break;
           case "get":
             response = handleGet(tokens[1]);
@@ -196,6 +210,16 @@ public class Main{
         System.out.println("Error closing client socket: " + e.getMessage());
     }
     }
+  }
+
+  public static void sendSlave(String message){
+    try{
+      Socket slaveSockter = new Socket(slaveName, slavePort);
+      slaveSockter.getOutputStream().write(message.getBytes());
+    }catch(Exception e){
+      System.out.println("Error in creating slave socket while sending message to slave "+ e.getMessage());
+    }
+
   }
 
   public static void readFile() {
