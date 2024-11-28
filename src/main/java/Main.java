@@ -165,7 +165,7 @@ public class Main{
 
           case "psync":
                 response = makeBulkString("+FULLRESYNC "+master_replicationID+" "+master_replicationOffset+"\r\n", false);
-                clientSocket.getOutputStream().write(response.getBytes());
+                
                 // String emptyRDBFile = "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
                 byte[] bytes = HexFormat.of().parseHex("524544495330303131fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fa056374696d65c26d08bc65fa08757365642d6d656dc2b0c41000fa08616f662d62617365c000fff06e3bfec0ff5aa2");
 
@@ -173,18 +173,22 @@ public class Main{
                 // for(int i = 0 ; i < rdbHexFile.length()  ; i++) {
                 //   rdbBinaryFile += Integer.toBinaryString(Integer.parseInt(rdbHexFile.charAt(i)+"", 16));
                 // }
-                // response = "$"+bytes.length+"\r\n";
+                
                 // byte[] temp = response.getBytes();
                 
                 // System.out.println("byte array of empty hex file" +bytes.toString());
+                response = "$"+bytes.length+"\r\n";
+                clientSocket.getOutputStream().write(response.getBytes());
+                clientSocket.getOutputStream().write(response.getBytes());
                 clientSocket.getOutputStream().write(bytes);
-                // clientSocket.getOutputStream().write(bytes);
+                response = null;
                 break;
 
           default:
             break;
         }
 
+        if(response != null)
         clientSocket.getOutputStream().write(response.getBytes());
         
         
