@@ -67,7 +67,7 @@ public class Main{
           try{
             Socket slaveSocket = new Socket(hostName , masterPort);
             slaveOutput = slaveSocket.getOutputStream();
-            String pingMaster = "*1\r\n\r\nPING\r\n";
+            String pingMaster = "*1\r\n$4\r\nPING\r\n";
             slaveSocket.getOutputStream().write(pingMaster.getBytes());
             slaveSocket.getInputStream().read();
             slaveSocket.getOutputStream().flush();
