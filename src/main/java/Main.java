@@ -114,7 +114,8 @@ public class Main{
             new Thread(() -> handleClient(clientSocket)).start();
             System.out.println("herer");
             while(!queue.isEmpty()){
-              clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());
+              // clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());
+
             }
            }
          } catch (IOException e) {
@@ -230,12 +231,12 @@ public class Main{
       finally{
         
       try {
-        // System.out.println("Sending slave from queue");
-        // while(!queue.isEmpty()) {
-        //   System.out.println("-> "+ Arrays.toString(queue.peek()));
-        //   clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());
+        System.out.println("Sending slave from queue");
+        while(!queue.isEmpty()) {
+          System.out.println("-> "+ Arrays.toString(queue.peek()));
+          clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());
         // queue.remove();
-        // }
+        }
         clientSocket.close();
         System.out.println("Client disconnected");
     } catch (IOException e) {
