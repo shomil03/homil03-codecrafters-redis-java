@@ -15,7 +15,7 @@ import java.io.File;
 import java.io.FileReader;
 
 public class Main{
-  
+  static List<OutputStream> replicaOutputStreams = new ArrayList<>();
   static ConcurrentHashMap<String,ValueAndExpiry> map = new ConcurrentHashMap<>();
   static String directoryPath = null;
   static String dbFileName = null;
@@ -35,6 +35,7 @@ public class Main{
     public static void main(String[] args){
       // You can use print statements as follows for debugging, they'll be visible when running tests.
       System.out.println("Logs from your program will appear here!");
+      
       
       // int port = 6379;
       for(int i = 0 ; i < args.length ; i++){
@@ -128,6 +129,14 @@ public class Main{
          }
          
     }
+
+    final static class RespondTask{
+      final OutputStream out;
+      public RespondTask(OutputStream out) {
+        this.out = out;
+        Main.replicaOutputStreams.add(out);
+      }
+    }
     static void handleClient(Socket clientSocket) {
       BlockingQueue<String[]> blockingQueue = new LinkedBlockingDeque<>();
       // Socket replicaConnection = clientSocket;
@@ -164,7 +173,9 @@ public class Main{
 
               queue.add(tokens);
 
-             
+              if(Main.replicaOutputStreams.size() > 0) {
+                Main.replicaOutputStreams.get(0).write(makeRESPArray(tokens).getBytes());
+              }
   
               break;
             case "get":
@@ -216,6 +227,10 @@ public class Main{
                       System.out.println("Error in blocking queue: "+ e.getMessage());
                     }
 
+                    RespondTask task = new RespondTask(clientSocket.getOutputStream());
+
+                    // Main.RespondTask.out.add(clientSocket);
+
                     // System.out.println("storing replica connection");
                   // }catch(Exception e){
                   //   System.out.println("Error in psync "+ e.getMessage());
@@ -232,6 +247,8 @@ public class Main{
   
           if(response != null)
           clientSocket.getOutputStream().write(response.getBytes());
+
+         
 
           // if(replicaConnection != null)
           // replicaOutputStream.write(makeRESPArray(queue.remove()).getBytes());
