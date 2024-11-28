@@ -27,6 +27,7 @@ public class Main{
   static String hostName = "";
   static String slaveName = null;
   static int port = 6379;
+  static Socket slaveSocket;
 
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -57,7 +58,7 @@ public class Main{
 
 
         try{
-          Socket slaveSocket = new Socket(hostName , masterPort);
+          slaveSocket = new Socket(hostName , masterPort);
           String pingMaster = "*1\r\n$4\r\nPING\r\n";
           slaveSocket.getOutputStream().write(pingMaster.getBytes());
           slaveSocket.getInputStream().read();
@@ -147,16 +148,18 @@ public class Main{
 
             response = "+OK\r\n";
             if(slaveName != null){
-              // clientSocket = new Socket(slaveName, slavePort);
-              // clientSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
-              try{
-                Socket slaveSocket = new Socket(slaveName, slavePort);
-                slaveSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
-              }catch(Exception e){
-                System.out.println("Error in sending message to slave : "+ e.getMessage());
-              }
-              // clientSocket = new Socket(port);
+              slaveSocket.getInputStream().read(response.getBytes());
             }
+            //   // clientSocket = new Socket(slaveName, slavePort);
+            //   // clientSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
+            //   try{
+            //     Socket slaveSocket = new Socket(slaveName, slavePort);
+            //     slaveSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
+            //   }catch(Exception e){
+            //     System.out.println("Error in sending message to slave : "+ e.getMessage());
+            //   }
+            //   // clientSocket = new Socket(port);
+            // }
             // clientSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
             // sendSlave(makeRESPArray(tokens));
 
