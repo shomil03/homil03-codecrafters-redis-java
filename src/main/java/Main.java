@@ -161,7 +161,9 @@ public class Main{
               if(slaveName != null){
                 System.out.println(Arrays.toString(tokens));
                 // clientSocket.getOutputStream().write(makeBulkString(tokens[0], false).getBytes());
-                queue.add(tokens);
+                // queue.add(tokens);
+                clientSocket.getOutputStream().write( "+OK\r\n".getBytes());
+                response = makeRESPArray(tokens);
                
               }
          
@@ -228,36 +230,21 @@ public class Main{
       }catch(Exception e){
         System.out.println("Client handler exception: " + e.getMessage());
       }
-      finally {
-        try {
-            System.out.println("Sending slave from queue");
-            while (!queue.isEmpty()) {
-                try {
-                    if (!clientSocket.isClosed() && clientSocket.isConnected()) {
-                        System.out.println("-> " + Arrays.toString(queue.peek()));
-                        clientSocket.getOutputStream().write(makeRESPArray(queue.peek()).getBytes());
-                        queue.remove();
-                    } else {
-                        System.out.println("Client socket is closed or disconnected");
-                        break;
-                    }
-                } catch (IOException e) {
-                    System.out.println("Error sending data to client: " + e.getMessage());
-                    break; // Exit loop on write error
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Error during queue processing: " + e.getMessage());
-        } finally {
-            try {
-                clientSocket.close();
-                System.out.println("Client disconnected");
-            } catch (IOException e) {
-                System.out.println("Error closing client socket: " + e.getMessage());
-            }
-        }
+      finally{
+        
+      try {
+        // System.out.println("Sending slave from queue");
+        // while(!queue.isEmpty()) {
+          // System.out.println("-> "+ Arrays.toString(queue.peek()));
+          // clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());
+        // queue.remove();
+        // }
+        clientSocket.close();
+        System.out.println("Client disconnected");
+    } catch (IOException e) {
+        System.out.println("Error closing client socket: " + e.getMessage());
     }
-    
+    }
   }
 
  
