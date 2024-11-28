@@ -154,11 +154,11 @@ public class Main{
   
               System.out.println("Sending salve :"+slaveName);
               queue.add(tokens);
-              // if(slaveName != null){
-              //   System.out.println(Arrays.toString(tokens));
-              //   clientSocket.getOutputStream().write(makeBulkString(tokens, false));
+              if(slaveName != null){
+                System.out.println(Arrays.toString(tokens));
+                clientSocket.getOutputStream().write(makeBulkString(tokens[0], false).getBytes());
                
-              // }
+              }
          
   
               break;
@@ -213,6 +213,7 @@ public class Main{
             default:
               break;
           }
+          
   
           if(response != null)
           clientSocket.getOutputStream().write(response.getBytes());
@@ -225,12 +226,12 @@ public class Main{
       finally{
         
       try {
-        System.out.println("Sending slave from queue");
-        while(!queue.isEmpty()) {
-          System.out.println("-> "+ Arrays.toString(queue.peek()));
-          clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());
+        // System.out.println("Sending slave from queue");
+        // while(!queue.isEmpty()) {
+        //   System.out.println("-> "+ Arrays.toString(queue.peek()));
+        //   clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());
         // queue.remove();
-        }
+        // }
         clientSocket.close();
         System.out.println("Client disconnected");
     } catch (IOException e) {
