@@ -161,7 +161,7 @@ public class Main{
                 Socket slave = new Socket(slaveName , slavePort);
                 slave.getOutputStream().write(makeRESPArray(tokens).getBytes());
               }catch(Exception e){
-                System.out.println("Error in forwading");
+                System.out.println("Error in forwading: " + e.getMessage());
               }
   
               // System.out.println("Sending salve :"+slaveName);
