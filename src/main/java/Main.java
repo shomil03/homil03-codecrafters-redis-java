@@ -225,7 +225,9 @@ public class Main{
       finally{
         
       try {
+        System.out.println("Sending slave from queue");
         while(!queue.isEmpty()) {
+          System.out.println("-> "+ Arrays.toString(queue.peek()));
           clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());
         // queue.remove();
         }
