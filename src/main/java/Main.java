@@ -130,7 +130,7 @@ public class Main{
     }
     static void handleClient(Socket clientSocket) {
       BlockingQueue<String> blockingQueue = new LinkedBlockingDeque<>();
-      Socket replicaConnection = null;
+      final Socket replicaConnection = clientSocket;
       try{
        
         Parser parser = new Parser(clientSocket.getInputStream());
@@ -201,7 +201,7 @@ public class Main{
                     response = null;
 
                     System.out.println("storing replica connection");
-                    replicaConnection = clientSocket;
+                    // replicaConnection = clientSoc ket;
                   }catch(Exception e){
                     System.out.println("Error in psync "+ e.getMessage());
                   }
