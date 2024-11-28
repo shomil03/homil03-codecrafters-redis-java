@@ -37,25 +37,13 @@ public class Main{
       System.out.println("Logs from your program will appear here!");
       
       
-      // int port = 6379;
       for(int i = 0 ; i < args.length ; i++){
   
-        // if(args[i].equals("REPLCONF")) {
-        //   i++;
-        //   System.out.println("Setting slave name : "+args[i]);
-        //   slaveName = args[i];
-        //   i++;
-        //   System.out.println("Setting slave port:"+args[i]);
-        //   slavePort = Integer.parseInt(args[i]);
-        //   continue;
-  
-        // }
+        
         if(args[i].equals("--replicaof")) {
           role = "slave";
           i++;
-          // String temp[] = args[i].split(" ");
-          // masterPort = Integer.parseInt(temp[1].substring(0 , temp[1].length()));
-          // hostName = temp[0].substring(1);
+         
           masterPort = Integer.parseInt(args[i].split(" ")[1]);
           hostName = args[i].split(" ")[0];
            
@@ -103,7 +91,6 @@ public class Main{
         }
       }
          ServerSocket serverSocket = null;
-        //  Socket clientSocket = null;
          
          try {
   
@@ -140,14 +127,8 @@ public class Main{
     }
     static void handleClient(Socket clientSocket) {
       BlockingQueue<String[]> blockingQueue = new LinkedBlockingDeque<>();
-      // Socket replicaConnection = clientSocket;
-      // try{
-        
-      // }catch(Exception e){
-      //   System.out.println("Error in finaling outoutstream "+ e.getMessage());
-      // }
+      
       try{
-        // final OutputStream replicaOutputStream = clientSocket.getOutputStream();
         Parser parser = new Parser(clientSocket.getInputStream());
         while (true) {
   
@@ -167,15 +148,11 @@ public class Main{
                 map.put(tokens[1] , new ValueAndExpiry(tokens[2], Long.MAX_VALUE));
               }
 
-              
-              // blockingQueue.add(tokens);
-              // System.out.println("Added to blocked queue :" + blockingQueue.peek().toString());
               response = "+OK\r\n";
 
-              queue.add(tokens);
               System.out.println("Replica outputstream size :" + Main.replicaOutputStreams.size());
-              if(Main.replicaOutputStreams.size() > 0) {
-                Main.replicaOutputStreams.get(0).write(makeRESPArray(tokens).getBytes());
+              for(int i= 0 ; i < Main.replicaOutputStreams.size() ; i++){
+                Main.replicaOutputStreams.get(i).write(makeRESPArray(tokens).getBytes());
               }
   
               break;
@@ -228,15 +205,8 @@ public class Main{
                     //   System.out.println("Error in blocking queue: "+ e.getMessage());
                     // }
 
-                    RespondTask task = new RespondTask(clientSocket.getOutputStream());
-
-                    // Main.RespondTask.out.add(clientSocket);
-
-                    // System.out.println("storing replica connection");
-                  // }catch(Exception e){
-                  //   System.out.println("Error in psync "+ e.getMessage());
-                  // }
-                  // System.out.println(replicaConnection.);
+                    // RespondTask task = new RespondTask(clientSocket.getOutputStream());
+                    Main.replicaOutputStreams.add(clientSocket.getOutputStream());
 
                 
                   break;
@@ -248,14 +218,6 @@ public class Main{
   
           if(response != null)
           clientSocket.getOutputStream().write(response.getBytes());
-
-         
-
-          // if(replicaConnection != null)
-          // replicaOutputStream.write(makeRESPArray(queue.remove()).getBytes());
-          // while(!queue.isEmpty()) {
-          //   clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());   
-          // }
           
           
         }
