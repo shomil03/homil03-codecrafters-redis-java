@@ -112,7 +112,10 @@ public class Main{
            while(true) {
             final Socket clientSocket = serverSocket.accept();
             new Thread(() -> handleClient(clientSocket)).start();
-           
+            System.out.println("herer");
+            while(!queue.isEmpty()){
+              clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());
+            }
            }
          } catch (IOException e) {
            System.out.println("IOException: " + e.getMessage());
@@ -156,7 +159,8 @@ public class Main{
               queue.add(tokens);
               if(slaveName != null){
                 System.out.println(Arrays.toString(tokens));
-                clientSocket.getOutputStream().write(makeBulkString(tokens[0], false).getBytes());
+                // clientSocket.getOutputStream().write(makeBulkString(tokens[0], false).getBytes());
+                queue.add(tokens);
                
               }
          
