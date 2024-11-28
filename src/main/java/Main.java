@@ -161,9 +161,10 @@ public class Main{
               if(slaveName != null){
                 System.out.println(Arrays.toString(tokens));
                 // clientSocket.getOutputStream().write(makeBulkString(tokens[0], false).getBytes());
+                slaveSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
                 // queue.add(tokens);
-                clientSocket.getOutputStream().write( "+OK\r\n".getBytes());
-                response = makeRESPArray(tokens);
+                // clientSocket.getOutputStream().write( "+OK\r\n".getBytes());
+                // response = makeRESPArray(tokens);
                
               }
          
