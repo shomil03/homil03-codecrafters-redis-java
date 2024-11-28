@@ -157,7 +157,7 @@ public class Main{
               response = "+OK\r\n";
   
               // System.out.println("Sending salve :"+slaveName);
-              queue.add(tokens);
+              // queue.add(tokens);
               // if(slaveName != null && role.equals("master")){
               //   System.out.println(Arrays.toString(tokens));
               //   // clientSocket.getOutputStream().write(makeBulkString(tokens[0], false).getBytes());
@@ -227,9 +227,9 @@ public class Main{
           if(response != null)
           clientSocket.getOutputStream().write(response.getBytes());
 
-          while(!queue.isEmpty()) {
-            clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());   
-          }
+          // while(!queue.isEmpty()) {
+          //   clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());   
+          // }
           
           
         }
