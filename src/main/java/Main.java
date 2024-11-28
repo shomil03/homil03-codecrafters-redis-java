@@ -187,10 +187,12 @@ public class Main{
              break;
 
           case "replconf":
-              System.out.println("Setting slave name : "+tokens[1]);
-              slaveName = tokens[1];
-              System.out.println("Setting slave port:"+tokens[2]);
-              slavePort = Integer.parseInt(tokens[2]);
+              if(tokens[1].equals("listening-port")){
+                System.out.println("Setting slave name : "+tokens[1]);
+                slaveName = tokens[1];
+                System.out.println("Setting slave port:"+tokens[2]);
+                slavePort = Integer.parseInt(tokens[2]);
+              }
               response = "+OK\r\n";
               break;  
 
