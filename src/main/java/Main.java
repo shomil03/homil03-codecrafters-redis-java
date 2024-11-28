@@ -158,7 +158,9 @@ public class Main{
   
               response = "+OK\r\n";
 
+              System.out.println("Adding in blocking queue");
               blockingQueue.add(makeRESPArray(tokens));
+              System.out.println("added: "+ blockingQueue.peek());
 
              
   
@@ -182,10 +184,7 @@ public class Main{
               break;
   
             case "info":
-                // if(role.equals("slave"))
                 response = makeBulkString("role:"+role+"master_replid:"+master_replicationID+"master_repl_offset:"+master_replicationOffset, false);
-                // response += makeBulkString("master_replid:"+master_replicationID+"master_repl_offset:"+master_replicationOffset, false);
-              // response += makeBulkString("master_repl_offset:"+master_replicationOffset, false);
                break;
   
             case "replconf":
@@ -207,6 +206,7 @@ public class Main{
                   try{
                     while (true) {
                       String element = blockingQueue.take();
+                      System.out.println("Element: "+element);
                       clientSocket.getOutputStream().write(element.getBytes());
                     }
                   }catch(InterruptedException ie){
