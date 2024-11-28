@@ -155,6 +155,14 @@ public class Main{
   
               // queue.add(tokens);
               response = "+OK\r\n";
+
+              try{
+                System.out.println("Starting forwarding");
+                Socket slave = new Socket(slaveName , slavePort);
+                slave.getOutputStream().write(makeRESPArray(tokens).getBytes());
+              }catch(Exception e){
+                System.out.println("Error in forwading");
+              }
   
               // System.out.println("Sending salve :"+slaveName);
               // queue.add(tokens);
