@@ -146,7 +146,8 @@ public class Main{
 
             response = "+OK\r\n";
             if(slaveName != null)
-            sendSlave(makeRESPArray(tokens));
+            clientSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
+            // sendSlave(makeRESPArray(tokens));
             break;
           case "get":
             response = handleGet(tokens[1]);
@@ -212,15 +213,15 @@ public class Main{
     }
   }
 
-  public static void sendSlave(String message){
-    try{
-      Socket slaveSockter = new Socket(slaveName, slavePort);
-      slaveSockter.getOutputStream().write(message.getBytes());
-    }catch(Exception e){
-      System.out.println("Error in creating slave socket while sending message to slave "+ e.getMessage());
-    }
+  // public static void sendSlave(String message){
+  //   try{
+  //     Socket slaveSockter = new Socket(slaveName, slavePort);
+  //     slaveSockter.getOutputStream().write(message.getBytes());
+  //   }catch(Exception e){
+  //     System.out.println("Error in creating slave socket while sending message to slave "+ e.getMessage());
+  //   }
 
-  }
+  // }
 
   public static void readFile() {
     try{
