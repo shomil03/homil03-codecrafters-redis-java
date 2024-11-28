@@ -26,12 +26,13 @@ public class Main{
   static String masterIP = "";
   static String hostName = "";
   static String slaveName = null;
+  static int port = 6379;
 
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     System.out.println("Logs from your program will appear here!");
     
-    int port = 6379;
+    // int port = 6379;
     for(int i = 0 ; i < args.length ; i++){
 
       if(args[i].equals("REPLCONF")) {
@@ -145,9 +146,14 @@ public class Main{
             }
 
             response = "+OK\r\n";
-            if(slaveName != null)
-            clientSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
+            if(slaveName != null){
+              // clientSocket = new Socket(slaveName, slavePort);
+              clientSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
+              // clientSocket = new Socket(port);
+            }
+            // clientSocket.getOutputStream().write(makeRESPArray(tokens).getBytes());
             // sendSlave(makeRESPArray(tokens));
+
             break;
           case "get":
             response = handleGet(tokens[1]);
