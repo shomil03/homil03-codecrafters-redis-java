@@ -205,19 +205,11 @@ public class Main{
                   clientSocket.getOutputStream().write(bytes);
                   response = null;
 
+                  System.out.println("storing replica connection");
                   replicaConnection = clientSocket;
+                  // System.out.println(replicaConnection.);
 
-                  // try{
-                  //   while (true) {
-                  //     String element = blockingQueue.take();
-                  //     System.out.println("Element: "+element);
-                  //     clientSocket.getOutputStream().write(element.getBytes());
-                  //   }
-                  // }catch(InterruptedException ie){
-                  //     System.out.println("blocking queue: "+ ie.getMessage());
-                  //     // throw new RuntimeException(ie);
-                  //   }
-                  // }
+                
                   break;
   
             default:
@@ -241,18 +233,18 @@ public class Main{
       }
       finally{
         
-      try {
-        // System.out.println("Sending slave from queue");
-        // while(!queue.isEmpty()) {
-          // System.out.println("-> "+ Arrays.toString(queue.peek()));
-          // clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());
-        // queue.remove();
-        // }
-        clientSocket.close();
-        System.out.println("Client disconnected");
-    } catch (IOException e) {
-        System.out.println("Error closing client socket: " + e.getMessage());
-    }
+    //   try {
+    //     // System.out.println("Sending slave from queue");
+    //     // while(!queue.isEmpty()) {
+    //       // System.out.println("-> "+ Arrays.toString(queue.peek()));
+    //       // clientSocket.getOutputStream().write(makeRESPArray(queue.remove()).getBytes());
+    //     // queue.remove();
+    //     // }
+    //     // clientSocket.close();
+    //     System.out.println("Client disconnected");
+    // } catch (IOException e) {
+    //     System.out.println("Error closing client socket: " + e.getMessage());
+    // }
     }
   }
 
