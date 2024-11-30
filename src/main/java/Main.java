@@ -142,6 +142,7 @@ public class Main{
               response = makeBulkString(tokens[1] , false);
               break;
             case "set":
+
               if(tokens.length > 3)
               map.put(tokens[1] , new ValueAndExpiry(tokens[2], System.currentTimeMillis()+Integer.parseInt(tokens[4])));
               else{
@@ -154,6 +155,7 @@ public class Main{
               for(int i= 0 ; i < Main.replicaOutputStreams.size() ; i++){
                 Main.replicaOutputStreams.get(i).write(makeRESPArray(tokens).getBytes());
               }
+              System.out.println("Map after adding key value: "+ map);
   
               break;
             case "get":
