@@ -72,8 +72,8 @@ public class Main{
   
             String sendPSYNC = makeRESPArray(new String[]{"PSYNC" ,"?", "-1"});
             slaveSocket.getOutputStream().write(sendPSYNC.getBytes());
-            // slaveSocket.getInputStream().read();
-            // slaveSocket.getOutputStream().flush();
+            slaveSocket.getInputStream().read();
+            slaveSocket.getOutputStream().flush();
   
           }catch(Exception e) {
             System.out.println("error in connection to master port: "+ e.getMessage());
@@ -126,7 +126,7 @@ public class Main{
       }
     }
     static void handleClient(Socket clientSocket) {
-      BlockingQueue<String[]> blockingQueue = new LinkedBlockingDeque<>();
+      // BlockingQueue<String[]> blockingQueue = new LinkedBlockingDeque<>();
       
       try{
         Parser parser = new Parser(clientSocket.getInputStream());
