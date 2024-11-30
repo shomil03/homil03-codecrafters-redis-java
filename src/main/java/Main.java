@@ -147,7 +147,7 @@ public class Main{
               else{
                 map.put(tokens[1] , new ValueAndExpiry(tokens[2], Long.MAX_VALUE));
               }
-
+              if(role.equals("master"))
               response = "+OK\r\n";
 
               System.out.println("Replica outputstream size :" + Main.replicaOutputStreams.size());
