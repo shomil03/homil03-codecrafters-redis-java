@@ -289,6 +289,7 @@ public class Main{
   }
 
   public static String handleGet(String key) {
+    System.out.println("map: "+map);
     if(key.equals("dir")) {
       if(directoryPath == null){
         return makeRESPArray(new String[]{});
